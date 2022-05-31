@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct PackageTrackerApp: App {
+    // MARK: - Properties
+    @Namespace var animation
+    
+    // MARK: - Layout
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            PackageListView(animation: animation)
         }
     }
 }
