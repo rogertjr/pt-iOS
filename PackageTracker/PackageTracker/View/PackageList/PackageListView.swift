@@ -10,6 +10,7 @@ import SwiftUI
 struct PackageListView: View {
     // MARK: - Properties
     @StateObject var viewModel = PackageListViewModel()
+    @EnvironmentObject var appViewModel: AppViewModel
     var animation: Namespace.ID
     
     // MARK: - Layout
@@ -19,13 +20,26 @@ struct PackageListView: View {
                 headerView
                 searchBarView
                 customMenu()
-                packageListView()
+                
+                ForEach(viewModel.packages) { package in
+                    PackageCellView(package: package)
+                        .environmentObject(appViewModel)
+                }
             }
         }
         .background {
             Color("Background")
                 .ignoresSafeArea()
         }
+        .overlay {
+            if let package = viewModel.packages.first, appViewModel.showPackageDetailView {
+                PackageDetailView(animation: animation,
+                                  package: package)
+                    .environmentObject(appViewModel)
+                    .transition(.offset(x: 1, y: 1))
+            }
+        }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 
@@ -105,13 +119,5 @@ private extension PackageListView {
         }
         .padding(.vertical, 10)
         .padding(.horizontal)
-    }
-    
-    @ViewBuilder
-    func packageListView() -> some View {
-        PackageCellView()
-        PackageCellView()
-        PackageCellView()
-        PackageCellView()
     }
 }

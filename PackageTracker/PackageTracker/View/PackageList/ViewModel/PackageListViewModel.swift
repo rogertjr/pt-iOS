@@ -8,6 +8,8 @@
 import Foundation
 
 final class PackageListViewModel: ObservableObject {
-    
+    // MARK: - Properties
     @Published var currentMenu: MenuType = .inTransit
+    
+    @Published private (set) var packages: [Package] = [Package.dummyData]
 }

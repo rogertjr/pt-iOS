@@ -11,11 +11,13 @@ import SwiftUI
 struct PackageTrackerApp: App {
     // MARK: - Properties
     @Namespace var animation
+    @StateObject var appViewModel = AppViewModel()
     
     // MARK: - Layout
     var body: some Scene {
         WindowGroup {
             PackageListView(animation: animation)
+                .environmentObject(appViewModel)
         }
     }
 }
