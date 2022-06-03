@@ -15,6 +15,7 @@ enum TrackingServiceError: Error {
 
 protocol TrackingServiceProtocol {
     func fetchTracking(_ trackingNumber: String, carrier: Carrier) async throws -> Tracking?
+    func saveNewTracking(_ model: Package) async throws -> Tracking
 }
 
 struct TrackingService: TrackingServiceProtocol {
@@ -22,6 +23,20 @@ struct TrackingService: TrackingServiceProtocol {
     func fetchTracking(_ trackingNumber: String, carrier: Carrier) async throws -> Tracking? {
         let urlSession = URLSession.shared
         let endpoint = TrackingApi.fetchTracking(trackingNumber, carrier: carrier)
+        let (data, response) = try await urlSession.data(for: endpoint.request)
+                
+        guard let response = response as? HTTPURLResponse,
+              response.statusCode == 200 else {
+                throw TrackingServiceError.invalidStatusCode
+        }
+        
+        let trackingData = try JSONDecoder().decode(TrackingDataResponse.self, from: data)
+        return trackingData.data.tracking
+    }
+    
+    func saveNewTracking(_ model: Package) async throws -> Tracking {
+        let urlSession = URLSession.shared
+        let endpoint = TrackingApi.saveNewTracking(model)
         let (data, response) = try await urlSession.data(for: endpoint.request)
                 
         guard let response = response as? HTTPURLResponse,

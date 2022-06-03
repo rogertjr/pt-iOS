@@ -12,5 +12,10 @@ struct TrackingDataResponse: Decodable {
 }
 
 struct TrackingData: Decodable {
-    var tracking: Tracking?
+    var tracking: Tracking
+}
+
+// MARK: - Dummy Data
+extension TrackingDataResponse {
+    static let dummyData: TrackingDataResponse = TrackingDataResponse(data: TrackingData(tracking: Tracking.dummyData))
 }

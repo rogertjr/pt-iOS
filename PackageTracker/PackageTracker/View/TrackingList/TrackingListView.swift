@@ -48,8 +48,8 @@ struct TrackingListView: View {
                     .transition(.offset(x: 1, y: 1))
             }
             
-            if appViewModel.showNewPackageView {
-                NewPackageView()
+            if appViewModel.showNewTrackingView {
+                NewTrackingView()
                     .environmentObject(appViewModel)
             }
         }
@@ -88,7 +88,7 @@ private extension TrackingListView {
                 Color("Background")
                     .ignoresSafeArea()
             }
-            .ignoresSafeArea(.keyboard, edges: .bottom)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     var headerView: some View {
@@ -101,7 +101,7 @@ private extension TrackingListView {
             
             Button {
                 withAnimation(.easeInOut) {
-                    appViewModel.showNewPackageView = true
+                    appViewModel.showNewTrackingView = true
                 }
             } label: {
                 Image(systemName: "plus")

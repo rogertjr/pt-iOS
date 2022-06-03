@@ -1,5 +1,5 @@
 //
-//  NewPackageView.swift
+//  NewTrackingView.swift
 //  PackageTracker
 //
 //  Created by Rogério Toledo on 02/06/22.
@@ -7,30 +7,35 @@
 
 import SwiftUI
 
-struct NewPackageView: View {
+struct NewTrackingView: View {
     // MARK: - Properties
-    @ObservedObject var viewModel: NewPackageViewModel = NewPackageViewModel()
+    @ObservedObject var viewModel: NewTrackingViewModel = NewTrackingViewModel(TrackingService())
     @EnvironmentObject var appViewModel: AppViewModel
     
     // MARK: - Layout
     var body: some View {
         VStack {
-            ZStack {
-                HStack {
-                    backButtonView
-                    Spacer()
+            switch viewModel.state {
+            case .loading:
+                loadingView
+            default:
+                ZStack {
+                    HStack {
+                        backButtonView
+                        Spacer()
+                    }
+                    
+                    headerLabelView
                 }
                 
-                headerLabelView
+                VStack(spacing: 8) {
+                    trackingFieldView
+                    packageNameFieldView
+                }
+                .frame(maxHeight: .infinity,alignment: .center)
+                
+                saveButtonView
             }
-            
-            VStack(spacing: 8) {
-                trackingFieldView
-                packageNameFieldView
-            }
-            .frame(maxHeight: .infinity,alignment: .center)
-            
-            saveButtonView
         }
         .padding()
         .background {
@@ -38,15 +43,35 @@ struct NewPackageView: View {
                 .ignoresSafeArea()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .alert("Erro", isPresented: $viewModel.hasError, presenting: viewModel.state) { detail in
+            Button("Tentar novamente") {
+                Task {
+                    await viewModel.saveNewTracking()
+                }
+            }
+        } message: { detail in
+            if case let .failed(error) = detail {
+                Text(error.localizedDescription)
+            }
+        }
     }
 }
 
 // MARK: - Subviews
-private extension NewPackageView {
+private extension NewTrackingView {
+    var loadingView: some View {
+        ProgressView("Carregando...")
+            .background {
+                Color("Background")
+                    .ignoresSafeArea()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
     var backButtonView: some View {
         Button {
             withAnimation(.easeInOut.delay(0.07)) {
-                appViewModel.showNewPackageView = false
+                appViewModel.showNewTrackingView = false
             }
         } label: {
             Image(systemName: "chevron.left")
@@ -68,7 +93,7 @@ private extension NewPackageView {
     var trackingFieldView: some View {
         Label {
             TextField("Código de rastreio",
-                      text: $viewModel.tracking)
+                      text: $viewModel.trackingNumber)
                 .padding(.leading ,10)
         } icon: {
             Image(systemName: "barcode.viewfinder")
@@ -101,9 +126,17 @@ private extension NewPackageView {
     
     var saveButtonView: some View {
         Button(action: {
-            viewModel.saveNewPackage()
-            withAnimation(.easeInOut.delay(0.07)) {
-                appViewModel.showNewPackageView = false
+            Task {
+                await viewModel.saveNewTracking()
+             
+                switch viewModel.state {
+                case .success:
+                    withAnimation(.easeInOut.delay(0.07)) {
+                        appViewModel.showNewTrackingView = false
+                    }
+                default:
+                    return
+                }
             }
         }) {
             Text("Salvar")
@@ -125,4 +158,9 @@ private extension NewPackageView {
 }
 
 // MARK: - Preview
-
+struct NewTrackingView_PrewViews: PreviewProvider {
+    static var previews: some View {
+        NewTrackingView()
+            .environmentObject(AppViewModel())
+    }
+}

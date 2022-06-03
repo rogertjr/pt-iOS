@@ -26,3 +26,14 @@ struct Tracking: Identifiable, Decodable {
         case checkpoints
     }
 }
+
+// MARK: - Dummy Data
+extension Tracking {
+    static let dummyData: Tracking = Tracking(id: "asdasd123asd12",
+                                              expectedDelivery: nil,
+                                              trackingNumber: "OU317658744BR",
+                                              tag: "Delivered",
+                                              subtagMessage: "Picked up by customer",
+                                              title: "Test",
+                                              checkpoints: [Checkpoint.dummyData])
+}

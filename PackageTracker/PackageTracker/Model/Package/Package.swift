@@ -7,16 +7,7 @@
 
 import SwiftUI
 
-struct Package: Identifiable {
-    var id: String = UUID().uuidString
+struct Package {
     var title: String
     var tracking: String
-    var statusDetail: [PackageStatusDetail]
-}
-
-// MARK: - Dummy Data
-extension Package {
-    static let dummyData: Package = Package(title: "Nike Sneaker",
-                                            tracking: "OU1234567891BR",
-                                            statusDetail: PackageStatusDetail.dummyData)
 }

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		37DB9DA02849817F000E6F73 /* NewPackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9D9F2849817F000E6F73 /* NewPackageView.swift */; };
-		37DB9DA228498184000E6F73 /* NewPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA128498184000E6F73 /* NewPackageViewModel.swift */; };
+		37DB9DA02849817F000E6F73 /* NewTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */; };
+		37DB9DA228498184000E6F73 /* NewTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */; };
 		37DB9DA6284A46C2000E6F73 /* Carrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA5284A46C2000E6F73 /* Carrier.swift */; };
 		37DB9DAA284A492D000E6F73 /* TrackingApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA9284A492D000E6F73 /* TrackingApi.swift */; };
 		37DB9DAC284A4938000E6F73 /* TrackingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DAB284A4938000E6F73 /* TrackingService.swift */; };
@@ -31,8 +31,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		37DB9D9F2849817F000E6F73 /* NewPackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPackageView.swift; sourceTree = "<group>"; };
-		37DB9DA128498184000E6F73 /* NewPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPackageViewModel.swift; sourceTree = "<group>"; };
+		37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingView.swift; sourceTree = "<group>"; };
+		37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingViewModel.swift; sourceTree = "<group>"; };
 		37DB9DA5284A46C2000E6F73 /* Carrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Carrier.swift; sourceTree = "<group>"; };
 		37DB9DA9284A492D000E6F73 /* TrackingApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingApi.swift; sourceTree = "<group>"; };
 		37DB9DAB284A4938000E6F73 /* TrackingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingService.swift; sourceTree = "<group>"; };
@@ -66,19 +66,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		37DB9D9E28498174000E6F73 /* NewPackage */ = {
+		37DB9D9E28498174000E6F73 /* NewTracking */ = {
 			isa = PBXGroup;
 			children = (
 				37DB9DA328498189000E6F73 /* ViewModel */,
-				37DB9D9F2849817F000E6F73 /* NewPackageView.swift */,
+				37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */,
 			);
-			path = NewPackage;
+			path = NewTracking;
 			sourceTree = "<group>";
 		};
 		37DB9DA328498189000E6F73 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				37DB9DA128498184000E6F73 /* NewPackageViewModel.swift */,
+				37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -184,7 +184,7 @@
 		37DD4B3B28458B7900D27175 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				37DB9D9E28498174000E6F73 /* NewPackage */,
+				37DB9D9E28498174000E6F73 /* NewTracking */,
 				37DD4B4128458BCB00D27175 /* TrackingDetail */,
 				37DD4B3E28458BA400D27175 /* TrackingList */,
 			);
@@ -344,10 +344,10 @@
 				37DB9DB8284A59D7000E6F73 /* Constants.swift in Sources */,
 				37DB9DB2284A4BCD000E6F73 /* Tracking.swift in Sources */,
 				37DD4B4328458BD600D27175 /* TrackingDetailView.swift in Sources */,
-				37DB9DA228498184000E6F73 /* NewPackageViewModel.swift in Sources */,
+				37DB9DA228498184000E6F73 /* NewTrackingViewModel.swift in Sources */,
 				37DD4B4528458C4F00D27175 /* TrackingListViewModel.swift in Sources */,
 				37FC24DD28466FED00149207 /* AppViewModel.swift in Sources */,
-				37DB9DA02849817F000E6F73 /* NewPackageView.swift in Sources */,
+				37DB9DA02849817F000E6F73 /* NewTrackingView.swift in Sources */,
 				37DD4B2D2845296600D27175 /* PackageTrackerApp.swift in Sources */,
 				37DB9DAA284A492D000E6F73 /* TrackingApi.swift in Sources */,
 				37DD4B4A2845960300D27175 /* TrackingCellView.swift in Sources */,
