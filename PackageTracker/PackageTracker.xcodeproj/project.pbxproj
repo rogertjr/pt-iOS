@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		376918DE284AB31900FFAA58 /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376918DD284AB31900FFAA58 /* String+Ext.swift */; };
 		37DB9DA02849817F000E6F73 /* NewTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */; };
 		37DB9DA228498184000E6F73 /* NewTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */; };
 		37DB9DA6284A46C2000E6F73 /* Carrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA5284A46C2000E6F73 /* Carrier.swift */; };
@@ -26,11 +27,11 @@
 		37DD4B4A2845960300D27175 /* TrackingCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DD4B492845960300D27175 /* TrackingCellView.swift */; };
 		37FC24DD28466FED00149207 /* AppViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FC24DC28466FED00149207 /* AppViewModel.swift */; };
 		37FC24E0284696E100149207 /* TrackingDetailCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FC24DF284696E100149207 /* TrackingDetailCellView.swift */; };
-		37FC24E328469C3000149207 /* PackageStatusDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FC24E228469C3000149207 /* PackageStatusDetail.swift */; };
 		37FC24E72846A51B00149207 /* Package.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FC24E62846A51B00149207 /* Package.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		376918DD284AB31900FFAA58 /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
 		37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingView.swift; sourceTree = "<group>"; };
 		37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingViewModel.swift; sourceTree = "<group>"; };
 		37DB9DA5284A46C2000E6F73 /* Carrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Carrier.swift; sourceTree = "<group>"; };
@@ -51,7 +52,6 @@
 		37DD4B492845960300D27175 /* TrackingCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingCellView.swift; sourceTree = "<group>"; };
 		37FC24DC28466FED00149207 /* AppViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModel.swift; sourceTree = "<group>"; };
 		37FC24DF284696E100149207 /* TrackingDetailCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingDetailCellView.swift; sourceTree = "<group>"; };
-		37FC24E228469C3000149207 /* PackageStatusDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageStatusDetail.swift; sourceTree = "<group>"; };
 		37FC24E62846A51B00149207 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,6 +66,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		376918DC284AB30E00FFAA58 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				376918DD284AB31900FFAA58 /* String+Ext.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		37DB9D9E28498174000E6F73 /* NewTracking */ = {
 			isa = PBXGroup;
 			children = (
@@ -152,6 +160,7 @@
 		37DD4B2B2845296600D27175 /* PackageTracker */ = {
 			isa = PBXGroup;
 			children = (
+				376918DC284AB30E00FFAA58 /* Extension */,
 				37DB9DB6284A59CD000E6F73 /* Constants */,
 				37DB9DA7284A4837000E6F73 /* Network */,
 				37DB9DA4284A4664000E6F73 /* Enum */,
@@ -256,7 +265,6 @@
 		37FC24E42846A50000149207 /* Package */ = {
 			isa = PBXGroup;
 			children = (
-				37FC24E228469C3000149207 /* PackageStatusDetail.swift */,
 				37FC24E62846A51B00149207 /* Package.swift */,
 			);
 			path = Package;
@@ -342,6 +350,7 @@
 			files = (
 				37FC24E0284696E100149207 /* TrackingDetailCellView.swift in Sources */,
 				37DB9DB8284A59D7000E6F73 /* Constants.swift in Sources */,
+				376918DE284AB31900FFAA58 /* String+Ext.swift in Sources */,
 				37DB9DB2284A4BCD000E6F73 /* Tracking.swift in Sources */,
 				37DD4B4328458BD600D27175 /* TrackingDetailView.swift in Sources */,
 				37DB9DA228498184000E6F73 /* NewTrackingViewModel.swift in Sources */,
@@ -358,7 +367,6 @@
 				37DB9DAF284A4B6A000E6F73 /* TrackingData.swift in Sources */,
 				37DD4B48284591A600D27175 /* Menu.swift in Sources */,
 				37DB9DAC284A4938000E6F73 /* TrackingService.swift in Sources */,
-				37FC24E328469C3000149207 /* PackageStatusDetail.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

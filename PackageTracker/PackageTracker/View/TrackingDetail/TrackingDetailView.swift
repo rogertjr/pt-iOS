@@ -34,9 +34,10 @@ struct TrackingDetailView: View {
                     Divider()
                     
                     if tracking.checkpoints.count > 0 {
-                        List(tracking.checkpoints) { checkpoint in
-                            TrackingDetailCellView(checkpoint: checkpoint)
-                                
+                        List {
+                            ForEach(tracking.checkpoints.reversed()) { checkpoint in
+                                TrackingDetailCellView(checkpoint: checkpoint)
+                            }
                         }
                         .frame( maxWidth: .infinity)
                         .edgesIgnoringSafeArea([.top, .leading, .trailing])

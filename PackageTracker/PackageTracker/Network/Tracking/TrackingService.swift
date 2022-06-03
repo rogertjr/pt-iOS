@@ -34,6 +34,8 @@ struct TrackingService: TrackingServiceProtocol {
         return trackingData.data.tracking
     }
     
+    
+    /// Persists new tracking
     func saveNewTracking(_ model: Package) async throws -> Tracking {
         let urlSession = URLSession.shared
         let endpoint = TrackingApi.saveNewTracking(model)

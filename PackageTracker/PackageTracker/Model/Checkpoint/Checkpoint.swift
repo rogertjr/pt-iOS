@@ -8,7 +8,7 @@
 import Foundation
 
 struct Checkpoint: Identifiable, Decodable {
-    var id: String? = UUID().uuidString
+    let id: String = UUID().uuidString
     var location: String?
     var message: String?
     var tag: String?
@@ -26,8 +26,7 @@ struct Checkpoint: Identifiable, Decodable {
 }
 
 extension Checkpoint {
-    static let dummyData: Checkpoint = Checkpoint(id: UUID().uuidString,
-                                                  location: "Agência dos Correios, DIADEMA - SP",
+    static let dummyData: Checkpoint = Checkpoint(location: "Agência dos Correios, DIADEMA - SP",
                                                   message: "Objeto postado após o horário limite da unidade",
                                                   tag: "InTransit",
                                                   checkpointTime: "2022-06-01T18:38:00")

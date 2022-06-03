@@ -15,28 +15,22 @@ struct TrackingDetailCellView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             dateLabelView
+            statusLabelView
             
-            Group {
-                statusLabelView
-                iconLocationView("pin.fill")
+            HStack(spacing: 8) {
+                iconLocationView("pin.fill", color: Color("Black"))
                 locationLabelView(checkpoint.location ?? "")
             }
-                
-//            if let nextLocation = statusDetail.nextLocation {
-//                HStack(spacing: 10) {
-//                    iconLocationView("arrow.forward")
-//                    locationLabelView(nextLocation)
-//                }
-//            }
+            .padding(.bottom, 8)
         }
         .padding(.leading, 10)
     }
 }
 
-// MARK: - Subvies
+// MARK: - Subviews
 private extension TrackingDetailCellView {
     var dateLabelView: some View {
-        Text(checkpoint.checkpointTime ?? "")
+        Text(checkpoint.checkpointTime?.dateFormatted() ?? "")
             .font(.caption2)
             .bold()
             .foregroundColor(.gray)
@@ -62,11 +56,11 @@ private extension TrackingDetailCellView {
     }
     
     @ViewBuilder
-    func iconLocationView(_ systemName: String) -> some View {
+    func iconLocationView(_ systemName: String, color: Color) -> some View {
         Image(systemName: systemName)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .foregroundColor(Color("Black"))
+            .foregroundColor(color)
             .frame(width: 16, height: 16)
     }
 }
