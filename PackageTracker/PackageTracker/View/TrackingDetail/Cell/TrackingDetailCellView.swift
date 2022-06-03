@@ -1,5 +1,5 @@
 //
-//  PackageDetailCellView.swift
+//  TrackingDetailCellView.swift
 //  PackageTracker
 //
 //  Created by Rogério Toledo on 31/05/22.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-struct PackageDetailCellView: View {
+struct TrackingDetailCellView: View {
     // MARK: - Properties
-    var statusDetail: PackageStatusDetail
+    var checkpoint: Checkpoint
     
     // MARK: - Layout
     var body: some View {
@@ -19,24 +19,24 @@ struct PackageDetailCellView: View {
             Group {
                 statusLabelView
                 iconLocationView("pin.fill")
-                locationLabelView(statusDetail.lastLocation ?? "")
+                locationLabelView(checkpoint.location ?? "")
             }
                 
-            if let nextLocation = statusDetail.nextLocation {
-                HStack(spacing: 10) {
-                    iconLocationView("arrow.forward")
-                    locationLabelView(nextLocation)
-                }
-            }
+//            if let nextLocation = statusDetail.nextLocation {
+//                HStack(spacing: 10) {
+//                    iconLocationView("arrow.forward")
+//                    locationLabelView(nextLocation)
+//                }
+//            }
         }
         .padding(.leading, 10)
     }
 }
 
 // MARK: - Subvies
-private extension PackageDetailCellView {
+private extension TrackingDetailCellView {
     var dateLabelView: some View {
-        Text(statusDetail.date)
+        Text(checkpoint.checkpointTime ?? "")
             .font(.caption2)
             .bold()
             .foregroundColor(.gray)
@@ -45,7 +45,7 @@ private extension PackageDetailCellView {
     }
     
     var statusLabelView: some View {
-        Text(statusDetail.status)
+        Text(checkpoint.message ?? "")
             .foregroundColor(Color("Black"))
             .font(.system(size: 16,
                           weight: .bold,
@@ -72,9 +72,9 @@ private extension PackageDetailCellView {
 }
 
 // MARK: - PreviewProvider
-struct PackageDetailCellView_Previews: PreviewProvider {
+struct TrackingDetailCellView_Previews: PreviewProvider {
     static var previews: some View {
-        PackageDetailCellView(statusDetail: PackageStatusDetail.dummyData.first!)
+        TrackingDetailCellView(checkpoint: Checkpoint.dummyData)
             .previewLayout(.sizeThatFits)
     }
 }

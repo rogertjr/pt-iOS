@@ -1,0 +1,28 @@
+//
+//  Tracking.swift
+//  PackageTracker
+//
+//  Created by Rogério Toledo on 03/06/22.
+//
+
+import Foundation
+
+struct Tracking: Identifiable, Decodable {
+    var id: String
+    var expectedDelivery: String?
+    var trackingNumber: String?
+    var tag: String?
+    var subtagMessage: String?
+    var title: String?
+    var checkpoints: [Checkpoint] = []
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case expectedDelivery = "expected_delivery"
+        case trackingNumber = "tracking_number"
+        case tag
+        case subtagMessage = "subtag_message"
+        case title
+        case checkpoints
+    }
+}

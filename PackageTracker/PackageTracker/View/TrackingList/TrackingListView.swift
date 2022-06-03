@@ -1,5 +1,5 @@
 //
-//  PackageListView.swift
+//  TrackingListView.swift
 //  PackageTracker
 //
 //  Created by Rogério Toledo on 30/05/22.
@@ -7,24 +7,32 @@
 
 import SwiftUI
 
-struct PackageListView: View {
+struct TrackingListView: View {
     // MARK: - Properties
-    @StateObject var viewModel: PackageListViewModel = PackageListViewModel()
+    @StateObject var viewModel: TrackingListViewModel = TrackingListViewModel(TrackingService())
     @EnvironmentObject var appViewModel: AppViewModel
     var animation: Namespace.ID
     
     // MARK: - Layout
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 16) {
-                headerView
-                searchBarView
-                customMenu()
-                
-                ForEach(viewModel.packages) { package in
-                    PackageCellView(package: package)
-                        .environmentObject(appViewModel)
+            switch viewModel.state {
+            case .loading:
+                loadingView
+            case .success:
+                VStack(spacing: 16) {
+                    headerView
+                    searchBarView
+                    customMenu()
+                    
+                    ForEach(viewModel.trackings) { tracking in
+                        TrackingCellView(tracking: tracking)
+                            .environmentObject(appViewModel)
+                    }
                 }
+            default:
+                // TODO: - CREATE EMPTY VIEW
+                emptyView
             }
         }
         .background {
@@ -32,9 +40,10 @@ struct PackageListView: View {
                 .ignoresSafeArea()
         }
         .overlay {
-            if let package = viewModel.packages.first, appViewModel.showPackageDetailView {
-                PackageDetailView(animation: animation,
-                                  package: package)
+            // TODO: Validate from selected tracking
+            if let tracking = viewModel.trackings.first, appViewModel.showTrackingDetailView {
+                TrackingDetailView(animation: animation,
+                                   tracking: tracking)
                     .environmentObject(appViewModel)
                     .transition(.offset(x: 1, y: 1))
             }
@@ -45,11 +54,43 @@ struct PackageListView: View {
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .alert("Erro", isPresented: $viewModel.hasError, presenting: viewModel.state) { detail in
+            Button("Tentar novamente") {
+                Task {
+                    await viewModel.fetchTrackings()
+                }
+            }
+        } message: { detail in
+            if case let .failed(error) = detail {
+                Text(error.localizedDescription)
+            }
+        }
+        .task {
+            await viewModel.fetchTrackings()
+        }
     }
 }
 
 // MARK: - Subviews
-private extension PackageListView {
+private extension TrackingListView {
+    var emptyView: some View {
+        Text("Não há encomendas cadastradas")
+            .font(.subheadline.bold())
+            .foregroundColor(Color("Black"))
+            .frame(maxWidth: .infinity,
+                   maxHeight: .infinity,
+                   alignment: .center)
+    }
+    
+    var loadingView: some View {
+        ProgressView("Carregando...")
+            .background {
+                Color("Background")
+                    .ignoresSafeArea()
+            }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+    }
+    
     var headerView: some View {
         HStack {
             Text("Encomendas")

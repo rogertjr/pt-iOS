@@ -16,7 +16,7 @@ struct PackageTrackerApp: App {
     // MARK: - Layout
     var body: some Scene {
         WindowGroup {
-            PackageListView(animation: animation)
+            TrackingListView(animation: animation)
                 .environmentObject(appViewModel)
         }
     }

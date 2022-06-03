@@ -1,5 +1,5 @@
 //
-//  PackageDetailView.swift
+//  TrackingDetailView.swift
 //  PackageTracker
 //
 //  Created by Rogério Toledo on 30/05/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PackageDetailView: View {
+struct TrackingDetailView: View {
     // MARK: - Env
     var animation: Namespace.ID
     
@@ -15,7 +15,7 @@ struct PackageDetailView: View {
     @EnvironmentObject var appViewModel: AppViewModel
     @State var showDetailContent: Bool = false
     
-    let package: Package
+    let tracking: Tracking
     
     // MARK: - Layout
     var body: some View {
@@ -33,9 +33,9 @@ struct PackageDetailView: View {
                     
                     Divider()
                     
-                    if package.statusDetail.count > 0 {
-                        List(package.statusDetail) { statusDetail in
-                            PackageDetailCellView(statusDetail: statusDetail)
+                    if tracking.checkpoints.count > 0 {
+                        List(tracking.checkpoints) { checkpoint in
+                            TrackingDetailCellView(checkpoint: checkpoint)
                                 
                         }
                         .frame( maxWidth: .infinity)
@@ -77,7 +77,7 @@ struct PackageDetailView: View {
 }
 
 // MARK: - Subviews
-private extension PackageDetailView {
+private extension TrackingDetailView {
     var backButtonView: some View {
         HStack {
             Button {
@@ -85,7 +85,7 @@ private extension PackageDetailView {
                     showDetailContent = false
                 }
                 withAnimation(.easeInOut.delay(0.07)) {
-                    appViewModel.showPackageDetailView = false
+                    appViewModel.showTrackingDetailView = false
                 }
             } label: {
                 Image(systemName: "chevron.left")
@@ -108,26 +108,26 @@ private extension PackageDetailView {
         Image(systemName: "map")
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .matchedGeometryEffect(id: package.id + "IMAGE", in: animation)
+            .matchedGeometryEffect(id: tracking.id + "IMAGE", in: animation)
             .frame(height: size.height / 5)
             .foregroundColor(.white)
     }
     
     var packageHeaderView: some View {
         VStack(alignment: .leading, spacing: 5) {
-            Text(package.title)
+            Text(tracking.title ?? "")
                 .font(.title.bold())
                 .foregroundColor(Color("Black"))
                 .fixedSize()
-                .matchedGeometryEffect(id: package.id + "TITLE", in: animation)
+                .matchedGeometryEffect(id: tracking.id + "TITLE", in: animation)
                 .lineLimit(1)
             
-            Text(package.tracking)
+            Text(tracking.trackingNumber ?? "")
                 .font(.caption2)
                 .bold()
                 .foregroundColor(.gray)
                 .fixedSize()
-                .matchedGeometryEffect(id: package.id + "TRACKING", in: animation)
+                .matchedGeometryEffect(id: tracking.id + "TRACKING", in: animation)
         }
     }
 }

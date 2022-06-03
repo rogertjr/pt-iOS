@@ -1,5 +1,5 @@
 //
-//  PackageCellView.swift
+//  TrackingCellView.swift
 //  PackageTracker
 //
 //  Created by Rogério Toledo on 30/05/22.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct PackageCellView: View {
+struct TrackingCellView: View {
     // MARK: - Properties
     @EnvironmentObject var appViewModel: AppViewModel
-    var package: Package
+    var tracking: Tracking
     
     // MARK: - Layout
     var body: some View {
@@ -18,8 +18,8 @@ struct PackageCellView: View {
             mapView
             VStack(alignment: .leading, spacing: 10) {
                 cardHeaderView
-                if let lastStatus = package.statusDetail.first?.status {
-                    lastStatusView(lastStatus)
+                if let lastMessage = tracking.subtagMessage {
+                    lastStatusView(lastMessage)
                 }
                 detailButtonView
             }
@@ -41,7 +41,7 @@ struct PackageCellView: View {
 }
 
 // MARK: - Subviews
-private extension PackageCellView {
+private extension TrackingCellView {
     var mapView: some View {
         Group {
             Image(systemName: "map")
@@ -59,11 +59,11 @@ private extension PackageCellView {
     
     var cardHeaderView: some View {
         Group {
-            Text(package.title)
+            Text(tracking.title ?? "")
                 .fontWeight(.bold)
                 .foregroundColor(Color("Black"))
             
-            Text(package.tracking)
+            Text(tracking.trackingNumber ?? "")
                 .font(.caption2.bold())
                 .foregroundColor(.gray)
                 .padding(.top, -5)
@@ -84,7 +84,7 @@ private extension PackageCellView {
             Button {
                 withAnimation(.easeInOut) {
                     // TODO: Handle selection
-                    appViewModel.showPackageDetailView = true
+                    appViewModel.showTrackingDetailView = true
                 }
                 
             } label: {
