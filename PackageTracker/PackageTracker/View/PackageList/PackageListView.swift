@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PackageListView: View {
     // MARK: - Properties
-    @StateObject var viewModel = PackageListViewModel()
+    @StateObject var viewModel: PackageListViewModel = PackageListViewModel()
     @EnvironmentObject var appViewModel: AppViewModel
     var animation: Namespace.ID
     
@@ -38,6 +38,11 @@ struct PackageListView: View {
                     .environmentObject(appViewModel)
                     .transition(.offset(x: 1, y: 1))
             }
+            
+            if appViewModel.showNewPackageView {
+                NewPackageView()
+                    .environmentObject(appViewModel)
+            }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
@@ -54,7 +59,9 @@ private extension PackageListView {
             Spacer()
             
             Button {
-                // TODO: CREATE ACTION
+                withAnimation(.easeInOut) {
+                    appViewModel.showNewPackageView = true
+                }
             } label: {
                 Image(systemName: "plus")
                     .foregroundColor(Color("Black"))

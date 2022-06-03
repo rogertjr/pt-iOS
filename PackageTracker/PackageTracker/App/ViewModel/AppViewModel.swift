@@ -10,4 +10,5 @@ import Foundation
 final class AppViewModel: ObservableObject {
     // MARK: - Properties
     @Published var showPackageDetailView: Bool = false
+    @Published var showNewPackageView: Bool = false
 }

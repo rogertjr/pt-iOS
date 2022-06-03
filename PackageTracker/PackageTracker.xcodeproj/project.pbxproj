@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37DB9DA02849817F000E6F73 /* NewPackageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9D9F2849817F000E6F73 /* NewPackageView.swift */; };
+		37DB9DA228498184000E6F73 /* NewPackageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA128498184000E6F73 /* NewPackageViewModel.swift */; };
 		37DD4B2D2845296600D27175 /* PackageTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DD4B2C2845296600D27175 /* PackageTrackerApp.swift */; };
 		37DD4B312845296800D27175 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37DD4B302845296800D27175 /* Assets.xcassets */; };
 		37DD4B342845296800D27175 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 37DD4B332845296800D27175 /* Preview Assets.xcassets */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		37DB9D9F2849817F000E6F73 /* NewPackageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPackageView.swift; sourceTree = "<group>"; };
+		37DB9DA128498184000E6F73 /* NewPackageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPackageViewModel.swift; sourceTree = "<group>"; };
 		37DD4B292845296600D27175 /* PackageTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PackageTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37DD4B2C2845296600D27175 /* PackageTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PackageTrackerApp.swift; sourceTree = "<group>"; };
 		37DD4B302845296800D27175 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -48,6 +52,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		37DB9D9E28498174000E6F73 /* NewPackage */ = {
+			isa = PBXGroup;
+			children = (
+				37DB9DA328498189000E6F73 /* ViewModel */,
+				37DB9D9F2849817F000E6F73 /* NewPackageView.swift */,
+			);
+			path = NewPackage;
+			sourceTree = "<group>";
+		};
+		37DB9DA328498189000E6F73 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				37DB9DA128498184000E6F73 /* NewPackageViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		37DD4B202845296500D27175 = {
 			isa = PBXGroup;
 			children = (
@@ -67,7 +88,6 @@
 		37DD4B2B2845296600D27175 /* PackageTracker */ = {
 			isa = PBXGroup;
 			children = (
-				37FC24DA28466FCA00149207 /* Shared */,
 				37DD4B462845919D00D27175 /* Model */,
 				37DD4B3B28458B7900D27175 /* View */,
 				37DD4B3A28458B6E00D27175 /* App */,
@@ -87,6 +107,7 @@
 		37DD4B3A28458B6E00D27175 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				37FC24DB28466FDF00149207 /* ViewModel */,
 				37DD4B2C2845296600D27175 /* PackageTrackerApp.swift */,
 				37DD4B302845296800D27175 /* Assets.xcassets */,
 			);
@@ -96,6 +117,7 @@
 		37DD4B3B28458B7900D27175 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				37DB9D9E28498174000E6F73 /* NewPackage */,
 				37DD4B4128458BCB00D27175 /* PackageDetail */,
 				37DD4B3E28458BA400D27175 /* PackageList */,
 			);
@@ -144,14 +166,6 @@
 				37FC24E42846A50000149207 /* Package */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		37FC24DA28466FCA00149207 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				37FC24DB28466FDF00149207 /* ViewModel */,
-			);
-			path = Shared;
 			sourceTree = "<group>";
 		};
 		37FC24DB28466FDF00149207 /* ViewModel */ = {
@@ -259,8 +273,10 @@
 			files = (
 				37FC24E0284696E100149207 /* PackageDetailCellView.swift in Sources */,
 				37DD4B4328458BD600D27175 /* PackageDetailView.swift in Sources */,
+				37DB9DA228498184000E6F73 /* NewPackageViewModel.swift in Sources */,
 				37DD4B4528458C4F00D27175 /* PackageListViewModel.swift in Sources */,
 				37FC24DD28466FED00149207 /* AppViewModel.swift in Sources */,
+				37DB9DA02849817F000E6F73 /* NewPackageView.swift in Sources */,
 				37DD4B2D2845296600D27175 /* PackageTrackerApp.swift in Sources */,
 				37DD4B4A2845960300D27175 /* PackageCellView.swift in Sources */,
 				37FC24E72846A51B00149207 /* Package.swift in Sources */,
