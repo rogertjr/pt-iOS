@@ -18,7 +18,10 @@ struct TrackingListView: View {
         ScrollView(.vertical, showsIndicators: false) {
             switch viewModel.state {
             case .loading:
-                loadingView
+                LoadingView(backgroundColor: Color("Background"),
+                            foregroundColor: Color("Black"),
+                            title: "Carregando...")
+                
             case .success:
                 VStack(spacing: 16) {
                     headerView
@@ -28,12 +31,14 @@ struct TrackingListView: View {
                     if viewModel.trackings.count > 0 {
                         ForEach(viewModel.trackings) { tracking in
                             TrackingCellView(tracking: tracking)
+                                .environmentObject(viewModel)
                                 .environmentObject(appViewModel)
                         }
                     } else {
                         emptyView
                     }
                 }
+                
             default:
                 EmptyView()
             }
@@ -42,11 +47,12 @@ struct TrackingListView: View {
             Color("Background")
                 .ignoresSafeArea()
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
         .overlay {
-            // TODO: Validate from selected tracking
-            if let tracking = viewModel.trackings.first, appViewModel.showTrackingDetailView {
+            if let tracking = viewModel.selectedTracking, appViewModel.showTrackingDetailView {
                 TrackingDetailView(animation: animation,
                                    tracking: tracking)
+                    .environmentObject(viewModel)
                     .environmentObject(appViewModel)
                     .transition(.offset(x: 1, y: 1))
             }
@@ -57,7 +63,6 @@ struct TrackingListView: View {
                     .environmentObject(appViewModel)
             }
         }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
         .alert("Erro", isPresented: $viewModel.hasError, presenting: viewModel.state) { detail in
             Button("Tentar novamente") {
                 Task {
@@ -84,15 +89,6 @@ private extension TrackingListView {
             .frame(maxWidth: .infinity,
                    maxHeight: .infinity,
                    alignment: .center)
-    }
-    
-    var loadingView: some View {
-        ProgressView("Carregando...")
-            .background {
-                Color("Background")
-                    .ignoresSafeArea()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     var headerView: some View {

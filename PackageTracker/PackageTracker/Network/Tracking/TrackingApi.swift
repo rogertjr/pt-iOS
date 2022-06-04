@@ -11,6 +11,7 @@ enum TrackingApi {
     case fetchTrackings
     case fetchTracking(_ trackingNumber: String, carrier: Carrier)
     case saveNewTracking(_ model: Package)
+    case deleteTracking(_ trackingNumber: String, carrier: Carrier)
 }
 
 extension TrackingApi {
@@ -32,6 +33,12 @@ extension TrackingApi {
         case .saveNewTracking:
             return String(format: "/%@/trackings",
                           TrackingApi.apiVersion)
+            
+        case let .deleteTracking(trackingNumer, carrier):
+            return String(format: "/%@/trackings/%@/%@",
+                          TrackingApi.apiVersion,
+                          carrier.rawValue,
+                          trackingNumer)
         }
     }
     
@@ -43,6 +50,8 @@ extension TrackingApi {
             return "GET"
         case .saveNewTracking:
             return "POST"
+        case .deleteTracking:
+            return "DELETE"
         }
     }
     

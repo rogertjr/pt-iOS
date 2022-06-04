@@ -9,6 +9,7 @@ import Foundation
 
 protocol TrackingListViewModelProtocol: ObservableObject {
     func fetchTrackings() async
+    func fetchTrackingDetails(_ tracking: Tracking) async
 }
 
 @MainActor
@@ -20,6 +21,7 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
     @Published private(set) var state: State = .na
     @Published var hasError: Bool = false
     @Published var trackings: [Tracking] = []
+    @Published var selectedTracking: Tracking?
     
     enum State {
         case na
@@ -35,8 +37,8 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
     
     // MARK: - Network
     func fetchTrackings() async {
-        self.state = .loading
-        self.hasError = false
+        state = .loading
+        hasError = false
         
         do {
             let data = try await service.fetchTrackings()
@@ -45,6 +47,28 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
                 return
             }
             self.trackings = trackings
+            self.state = .success
+        } catch {
+            self.state = .failed(error: error)
+            self.hasError = true
+        }
+    }
+    
+    func fetchTrackingDetails(_ tracking: Tracking) async {
+        state = .loading
+        hasError = false
+        
+        do {
+            let data = try await service.fetchTracking(tracking.trackingNumber ?? "",
+                                                       carrier: .correios)
+            guard let tracking = data else {
+                self.state = .failed(error: TrackingServiceError.failed)
+                return
+            }
+            self.selectedTracking = tracking
+            if let selectedIndex = self.trackings.firstIndex(where: { $0.id == tracking.id }) {
+                self.trackings[selectedIndex] = tracking
+            }
             self.state = .success
         } catch {
             self.state = .failed(error: error)

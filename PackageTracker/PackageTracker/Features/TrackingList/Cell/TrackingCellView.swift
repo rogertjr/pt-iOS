@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TrackingCellView: View {
     // MARK: - Properties
+    @EnvironmentObject var trackingListViewModel: TrackingListViewModel
     @EnvironmentObject var appViewModel: AppViewModel
     var tracking: Tracking
     
@@ -82,11 +83,17 @@ private extension TrackingCellView {
             Spacer()
             
             Button {
-                withAnimation(.easeInOut) {
-                    // TODO: Handle selection
-                    appViewModel.showTrackingDetailView = true
+                Task {
+                    await trackingListViewModel.fetchTrackingDetails(tracking)
+                    switch trackingListViewModel.state {
+                    case .success:
+                        withAnimation(.easeInOut) {
+                            appViewModel.showTrackingDetailView = true
+                        }
+                    default:
+                        return
+                    }
                 }
-                
             } label: {
                 Text("Ver detalhes")
                     .font(.callout)

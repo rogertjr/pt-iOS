@@ -18,7 +18,9 @@ struct NewTrackingView: View {
         VStack {
             switch viewModel.state {
             case .loading:
-                loadingView
+                LoadingView(backgroundColor: Color("Background"),
+                            foregroundColor: Color("Black"),
+                            title: "Carregando...")
             default:
                 ZStack {
                     HStack {
@@ -60,15 +62,6 @@ struct NewTrackingView: View {
 
 // MARK: - Subviews
 private extension NewTrackingView {
-    var loadingView: some View {
-        ProgressView("Carregando...")
-            .background {
-                Color("Background")
-                    .ignoresSafeArea()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    
     var backButtonView: some View {
         Button {
             withAnimation(.easeInOut.delay(0.07)) {
@@ -132,8 +125,8 @@ private extension NewTrackingView {
              
                 switch viewModel.state {
                 case let .success(tracking):
-                    withAnimation(.easeInOut.delay(0.07)) {
-                        trackingListViewModel.trackings.append(tracking)
+                    trackingListViewModel.trackings.append(tracking)
+                    withAnimation(.easeInOut.delay(0.03)) {
                         appViewModel.showNewTrackingView = false
                     }
                 default:

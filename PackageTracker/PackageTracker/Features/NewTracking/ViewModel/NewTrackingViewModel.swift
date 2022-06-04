@@ -39,8 +39,8 @@ final class NewTrackingViewModel: NewTrackingViewModelProtocol {
     
     // MARK: - Network
     func saveNewTracking() async {
-        self.state = .loading
-        self.hasError = false
+        state = .loading
+        hasError = false
         
         do {
             let model = Package(title: packageName, tracking: trackingNumber)

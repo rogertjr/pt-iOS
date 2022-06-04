@@ -14,7 +14,7 @@ struct Tracking: Identifiable, Decodable {
     var tag: String?
     var subtagMessage: String?
     var title: String?
-    var checkpoints: [Checkpoint] = []
+    var checkpoints: [Checkpoint]? = []
     
     enum CodingKeys: String, CodingKey {
         case id
