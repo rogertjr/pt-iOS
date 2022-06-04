@@ -16,10 +16,10 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
     // MARK: - Properties
     private let service: TrackingService
     
-    @Published var currentMenu: MenuType = .inTransit
+    @Published var currentMenu: MenuType = .all
     @Published private(set) var state: State = .na
     @Published var hasError: Bool = false
-    @Published private (set) var trackings: [Tracking] = []
+    @Published var trackings: [Tracking] = []
     
     enum State {
         case na
@@ -39,12 +39,12 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
         self.hasError = false
         
         do {
-            let data = try await service.fetchTracking("OU317658744BR", carrier: .correios)
-            guard let tracking = data else {
+            let data = try await service.fetchTrackings()
+            guard let trackings = data else {
                 self.state = .failed(error: TrackingServiceError.failed)
                 return
             }
-            self.trackings = [tracking]
+            self.trackings = trackings
             self.state = .success
         } catch {
             self.state = .failed(error: error)

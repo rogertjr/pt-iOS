@@ -8,6 +8,7 @@
 import Foundation
 
 enum TrackingApi {
+    case fetchTrackings
     case fetchTracking(_ trackingNumber: String, carrier: Carrier)
     case saveNewTracking(_ model: Package)
 }
@@ -18,18 +19,26 @@ extension TrackingApi {
     
     var path: String {
         switch self {
+        case .fetchTrackings:
+            return String(format: "/%@/trackings",
+                          TrackingApi.apiVersion)
+            
         case let .fetchTracking(trackingNumer, carrier):
             return String(format: "/%@/trackings/%@/%@",
                           TrackingApi.apiVersion,
                           carrier.rawValue,
                           trackingNumer)
+            
         case .saveNewTracking:
-            return String(format: "/%@/trackings", TrackingApi.apiVersion)
+            return String(format: "/%@/trackings",
+                          TrackingApi.apiVersion)
         }
     }
     
     var method: String {
         switch self {
+        case .fetchTrackings:
+            return "GET"
         case .fetchTracking:
             return "GET"
         case .saveNewTracking:
@@ -37,16 +46,17 @@ extension TrackingApi {
         }
     }
     
-    var queryItems: [URLQueryItem] {
+    var queryItems: [String: Any] {
         switch self {
         case let .saveNewTracking(model):
-            return [
+            return ["tracking": [
                 "tracking_number": model.tracking,
                 "title": model.title,
-                "language": "pt",
-            ].map(URLQueryItem.init)
+                "language": "pt"
+                ]
+            ]
         default:
-            return []
+            return [:]
         }
     }
     
@@ -56,14 +66,18 @@ extension TrackingApi {
     
         var request = URLRequest(url: urlComponents.url!)
         request.httpMethod = method
-        if case .saveNewTracking = self {
-            // TODO: FIXXX
-            // urlComponents.queryItems = ["tracking": queryItems]
-            urlComponents.queryItems = queryItems
-        }
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.addValue(AFTERSHIP_KEY, forHTTPHeaderField: "aftership-api-key")
         request.addValue("pt", forHTTPHeaderField: "lang")
+        
+        if case .saveNewTracking = self {
+            do {
+                let trackingData = try JSONSerialization.data(withJSONObject: queryItems, options: [])
+                request.httpBody = trackingData
+            } catch {
+                fatalError("🚨 - \(error.localizedDescription)")
+            }
+        }
         return  request
     }
 }

@@ -10,6 +10,7 @@ import SwiftUI
 struct NewTrackingView: View {
     // MARK: - Properties
     @ObservedObject var viewModel: NewTrackingViewModel = NewTrackingViewModel(TrackingService())
+    @EnvironmentObject var trackingListViewModel: TrackingListViewModel
     @EnvironmentObject var appViewModel: AppViewModel
     
     // MARK: - Layout
@@ -130,8 +131,9 @@ private extension NewTrackingView {
                 await viewModel.saveNewTracking()
              
                 switch viewModel.state {
-                case .success:
+                case let .success(tracking):
                     withAnimation(.easeInOut.delay(0.07)) {
+                        trackingListViewModel.trackings.append(tracking)
                         appViewModel.showNewTrackingView = false
                     }
                 default:

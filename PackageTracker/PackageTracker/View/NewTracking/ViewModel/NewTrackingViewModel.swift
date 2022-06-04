@@ -28,7 +28,7 @@ final class NewTrackingViewModel: NewTrackingViewModelProtocol {
     enum State {
         case na
         case loading
-        case success
+        case success(tracking: Tracking)
         case failed(error: Error)
     }
     
@@ -44,8 +44,9 @@ final class NewTrackingViewModel: NewTrackingViewModelProtocol {
         
         do {
             let model = Package(title: packageName, tracking: trackingNumber)
-            let _ = try await service.saveNewTracking(model)
-            self.state = .success
+            let tracking = try await service.saveNewTracking(model)
+            
+            self.state = .success(tracking: tracking)
         } catch {
             self.state = .failed(error: error)
             self.hasError = true

@@ -34,17 +34,17 @@ struct TrackingDetailView: View {
                     Divider()
                     
                     if tracking.checkpoints.count > 0 {
-                        List {
-                            ForEach(tracking.checkpoints.reversed()) { checkpoint in
-                                TrackingDetailCellView(checkpoint: checkpoint)
-                            }
+                        List(tracking.checkpoints.reversed()) { checkpoint in
+                            TrackingDetailCellView(checkpoint: checkpoint)
                         }
                         .frame( maxWidth: .infinity)
                         .edgesIgnoringSafeArea([.top, .leading, .trailing])
                         .listStyle(PlainListStyle())
                         .padding(.top, -10)
                     } else {
-                        Text("Sem status no momento :(")
+                        Text("Sem atualizações no momento :(")
+                            .font(.subheadline.bold())
+                            .foregroundColor(Color("Black"))
                     }
                 }
                 .padding(.top, 35)

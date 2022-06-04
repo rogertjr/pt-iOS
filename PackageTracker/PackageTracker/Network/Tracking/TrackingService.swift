@@ -14,11 +14,27 @@ enum TrackingServiceError: Error {
 }
 
 protocol TrackingServiceProtocol {
+    func fetchTrackings() async throws -> [Tracking]?
     func fetchTracking(_ trackingNumber: String, carrier: Carrier) async throws -> Tracking?
     func saveNewTracking(_ model: Package) async throws -> Tracking
 }
 
 struct TrackingService: TrackingServiceProtocol {
+    /// Fetches all trackings
+    func fetchTrackings() async throws -> [Tracking]? {
+        let urlSession = URLSession.shared
+        let endpoint = TrackingApi.fetchTrackings
+        let (data, response) = try await urlSession.data(for: endpoint.request)
+                
+        guard let response = response as? HTTPURLResponse,
+              response.statusCode == 200 else {
+                throw TrackingServiceError.invalidStatusCode
+        }
+        
+        let trackingData = try JSONDecoder().decode(TrackingListDataResponse.self, from: data)
+        return trackingData.data.trackings
+    }
+    
     /// Fetches data from a tracking number
     func fetchTracking(_ trackingNumber: String, carrier: Carrier) async throws -> Tracking? {
         let urlSession = URLSession.shared
@@ -33,8 +49,7 @@ struct TrackingService: TrackingServiceProtocol {
         let trackingData = try JSONDecoder().decode(TrackingDataResponse.self, from: data)
         return trackingData.data.tracking
     }
-    
-    
+        
     /// Persists new tracking
     func saveNewTracking(_ model: Package) async throws -> Tracking {
         let urlSession = URLSession.shared
@@ -42,7 +57,7 @@ struct TrackingService: TrackingServiceProtocol {
         let (data, response) = try await urlSession.data(for: endpoint.request)
                 
         guard let response = response as? HTTPURLResponse,
-              response.statusCode == 200 else {
+              (200...299).contains(response.statusCode) else {
                 throw TrackingServiceError.invalidStatusCode
         }
         

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		376918DE284AB31900FFAA58 /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376918DD284AB31900FFAA58 /* String+Ext.swift */; };
+		376918E0284AD23000FFAA58 /* TrackingListData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376918DF284AD22F00FFAA58 /* TrackingListData.swift */; };
 		37DB9DA02849817F000E6F73 /* NewTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */; };
 		37DB9DA228498184000E6F73 /* NewTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */; };
 		37DB9DA6284A46C2000E6F73 /* Carrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA5284A46C2000E6F73 /* Carrier.swift */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		376918DD284AB31900FFAA58 /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
+		376918DF284AD22F00FFAA58 /* TrackingListData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingListData.swift; sourceTree = "<group>"; };
 		37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingView.swift; sourceTree = "<group>"; };
 		37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingViewModel.swift; sourceTree = "<group>"; };
 		37DB9DA5284A46C2000E6F73 /* Carrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Carrier.swift; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 		37DB9DAD284A4B5F000E6F73 /* Tracking */ = {
 			isa = PBXGroup;
 			children = (
+				376918DF284AD22F00FFAA58 /* TrackingListData.swift */,
 				37DB9DAE284A4B6A000E6F73 /* TrackingData.swift */,
 				37DB9DB1284A4BCD000E6F73 /* Tracking.swift */,
 			);
@@ -349,6 +352,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				37FC24E0284696E100149207 /* TrackingDetailCellView.swift in Sources */,
+				376918E0284AD23000FFAA58 /* TrackingListData.swift in Sources */,
 				37DB9DB8284A59D7000E6F73 /* Constants.swift in Sources */,
 				376918DE284AB31900FFAA58 /* String+Ext.swift in Sources */,
 				37DB9DB2284A4BCD000E6F73 /* Tracking.swift in Sources */,

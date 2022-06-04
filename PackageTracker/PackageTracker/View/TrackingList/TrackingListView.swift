@@ -25,14 +25,17 @@ struct TrackingListView: View {
                     searchBarView
                     customMenu()
                     
-                    ForEach(viewModel.trackings) { tracking in
-                        TrackingCellView(tracking: tracking)
-                            .environmentObject(appViewModel)
+                    if viewModel.trackings.count > 0 {
+                        ForEach(viewModel.trackings) { tracking in
+                            TrackingCellView(tracking: tracking)
+                                .environmentObject(appViewModel)
+                        }
+                    } else {
+                        emptyView
                     }
                 }
             default:
-                // TODO: - CREATE EMPTY VIEW
-                emptyView
+                EmptyView()
             }
         }
         .background {
@@ -50,6 +53,7 @@ struct TrackingListView: View {
             
             if appViewModel.showNewTrackingView {
                 NewTrackingView()
+                    .environmentObject(viewModel)
                     .environmentObject(appViewModel)
             }
         }
@@ -156,8 +160,11 @@ private extension TrackingListView {
                                 .matchedGeometryEffect(id: "MENU", in: animation)
                         }
                     }
+                    .opacity(viewModel.trackings.count > 0 ? 1 : 0.6)
                     .onTapGesture {
-                        withAnimation(.easeInOut) { viewModel.currentMenu = menu }
+                        if viewModel.trackings.count > 0 {
+                            withAnimation(.easeInOut) { viewModel.currentMenu = menu }
+                        }
                     }
             }
         }

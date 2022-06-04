@@ -13,7 +13,7 @@ struct Checkpoint: Identifiable, Decodable {
     var message: String?
     var tag: String?
     var checkpointTime: String?
-//    var coordinates: [String]?
+//    var coordinates: [Double]?
     
     enum CodingKeys: String, CodingKey {
         case id

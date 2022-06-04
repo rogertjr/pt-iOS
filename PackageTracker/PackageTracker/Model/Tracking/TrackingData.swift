@@ -5,7 +5,7 @@
 //  Created by Rogério Toledo on 03/06/22.
 //
 
-import SwiftUI
+import Foundation
 
 struct TrackingDataResponse: Decodable {
     var data: TrackingData
