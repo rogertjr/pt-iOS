@@ -11,6 +11,7 @@
 		376918E0284AD23000FFAA58 /* TrackingListData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376918DF284AD22F00FFAA58 /* TrackingListData.swift */; };
 		376918E3284ADC2B00FFAA58 /* TrackingDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376918E2284ADC2B00FFAA58 /* TrackingDetailViewModel.swift */; };
 		376918EA284AE4D600FFAA58 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376918E9284AE4D600FFAA58 /* LoadingView.swift */; };
+		37A0495A284CDE2C00A81A7E /* Transition+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A04959284CDE2C00A81A7E /* Transition+Ext.swift */; };
 		37DB9DA02849817F000E6F73 /* NewTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */; };
 		37DB9DA228498184000E6F73 /* NewTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */; };
 		37DB9DA6284A46C2000E6F73 /* Carrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA5284A46C2000E6F73 /* Carrier.swift */; };
@@ -38,6 +39,7 @@
 		376918DF284AD22F00FFAA58 /* TrackingListData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingListData.swift; sourceTree = "<group>"; };
 		376918E2284ADC2B00FFAA58 /* TrackingDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingDetailViewModel.swift; sourceTree = "<group>"; };
 		376918E9284AE4D600FFAA58 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		37A04959284CDE2C00A81A7E /* Transition+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Transition+Ext.swift"; sourceTree = "<group>"; };
 		37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingView.swift; sourceTree = "<group>"; };
 		37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingViewModel.swift; sourceTree = "<group>"; };
 		37DB9DA5284A46C2000E6F73 /* Carrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Carrier.swift; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 			isa = PBXGroup;
 			children = (
 				376918DD284AB31900FFAA58 /* String+Ext.swift */,
+				37A04959284CDE2C00A81A7E /* Transition+Ext.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -398,6 +401,7 @@
 				37DB9DB2284A4BCD000E6F73 /* Tracking.swift in Sources */,
 				37DD4B4328458BD600D27175 /* TrackingDetailView.swift in Sources */,
 				37DB9DA228498184000E6F73 /* NewTrackingViewModel.swift in Sources */,
+				37A0495A284CDE2C00A81A7E /* Transition+Ext.swift in Sources */,
 				37DD4B4528458C4F00D27175 /* TrackingListViewModel.swift in Sources */,
 				37FC24DD28466FED00149207 /* AppViewModel.swift in Sources */,
 				37DB9DA02849817F000E6F73 /* NewTrackingView.swift in Sources */,

@@ -15,12 +15,17 @@ struct TrackingListView: View {
     
     // MARK: - Layout
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
+        VStack {
             switch viewModel.state {
             case .loading:
                 LoadingView(backgroundColor: Color("Background"),
                             foregroundColor: Color("Black"),
                             title: "Carregando...")
+                    .background {
+                        Color("Background")
+                            .ignoresSafeArea()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
             case .success:
                 VStack(spacing: 16) {
@@ -28,39 +33,58 @@ struct TrackingListView: View {
                     searchBarView
                     customMenu()
                     
-                    if viewModel.trackings.count > 0 {
-                        ForEach(viewModel.trackings) { tracking in
-                            TrackingCellView(tracking: tracking)
-                                .environmentObject(viewModel)
-                                .environmentObject(appViewModel)
+                        if viewModel.trackings.count > 0 {
+                            List(viewModel.trackings) { tracking in
+                                TrackingCellView(tracking: tracking)
+                                    .environmentObject(viewModel)
+                                    .environmentObject(appViewModel)
+                                    .background {
+                                        Color("Background")
+                                            .ignoresSafeArea()
+                                    }
+                                    .listRowSeparator(.hidden)
+                                    .listRowBackground(Color("Background"))
+                            }
+                            .background {
+                                Color("Background")
+                                    .ignoresSafeArea()
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .edgesIgnoringSafeArea([.leading, .trailing])
+                            .listStyle(PlainListStyle())
+                            .refreshable {
+                                Task {
+                                    await viewModel.fetchTrackings()
+                                }
+                            }
+                        } else {
+                            emptyView
                         }
-                    } else {
-                        emptyView
-                    }
                 }
+                .background {
+                    Color("Background")
+                        .ignoresSafeArea()
+                }
+                .ignoresSafeArea(.keyboard, edges: .bottom)
                 
             default:
                 EmptyView()
             }
         }
-        .background {
-            Color("Background")
-                .ignoresSafeArea()
-        }
-        .ignoresSafeArea(.keyboard, edges: .bottom)
         .overlay {
             if let tracking = viewModel.selectedTracking, appViewModel.showTrackingDetailView {
                 TrackingDetailView(animation: animation,
                                    tracking: tracking)
                     .environmentObject(viewModel)
                     .environmentObject(appViewModel)
-                    .transition(.offset(x: 1, y: 1))
+                    .transition(.pushTransition)
             }
             
             if appViewModel.showNewTrackingView {
                 NewTrackingView()
                     .environmentObject(viewModel)
                     .environmentObject(appViewModel)
+                    .transition(.pushTransition)
             }
         }
         .alert("Erro", isPresented: $viewModel.hasError, presenting: viewModel.state) { detail in
