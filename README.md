@@ -1,5 +1,4 @@
 <h1 align="center">PackageTracker</h1>
-![Build Status](https://app.travis-ci.com/rogertjr/pt-iOS.svg?branch=master)
 <p align="center">
     An iOS Package Tracker <br/>
     <img src="https://img.shields.io/badge/iOS-14.0+-blue.svg" />
