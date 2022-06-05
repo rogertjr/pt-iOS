@@ -14,7 +14,7 @@ protocol NewTrackingViewModelProtocol: ObservableObject {
 @MainActor
 final class NewTrackingViewModel: NewTrackingViewModelProtocol {
     // MARK: - Properties
-    private let service: TrackingService
+    private let service: TrackingServiceProtocol
     
     @Published var trackingNumber: String = ""
     @Published var packageName: String = ""
@@ -25,15 +25,31 @@ final class NewTrackingViewModel: NewTrackingViewModelProtocol {
         !trackingNumber.isEmpty && !packageName.isEmpty
     }
     
-    enum State {
+    enum State: Equatable {
         case na
         case loading
         case success(tracking: Tracking)
         case failed(error: Error)
+        
+        static func == (lhs: NewTrackingViewModel.State,
+                        rhs: NewTrackingViewModel.State) -> Bool {
+            switch (lhs, rhs) {
+            case (.na, .na):
+                return true
+            case (.loading, .loading):
+                return true
+            case (.success, .success):
+                return true
+            case (.failed, .failed):
+                return true
+            default:
+                return false
+            }
+        }
     }
     
     // MARK: - Init
-    init(_ service: TrackingService) {
+    init(_ service: TrackingServiceProtocol) {
         self.service = service
     }
     

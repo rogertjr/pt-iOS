@@ -15,7 +15,7 @@ protocol TrackingListViewModelProtocol: ObservableObject {
 @MainActor
 final class TrackingListViewModel: TrackingListViewModelProtocol {
     // MARK: - Properties
-    private let service: TrackingService
+    private let service: TrackingServiceProtocol
     
     @Published var currentMenu: MenuType = .all
     @Published private(set) var state: State = .na
@@ -23,15 +23,31 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
     @Published var trackings: [Tracking] = []
     @Published var selectedTracking: Tracking?
     
-    enum State {
+    enum State: Equatable {
         case na
         case loading
         case success
         case failed(error: Error)
+        
+        static func == (lhs: TrackingListViewModel.State,
+                        rhs: TrackingListViewModel.State) -> Bool {
+            switch (lhs, rhs) {
+            case (.na, .na):
+                return true
+            case (.loading, .loading):
+                return true
+            case (.success, .success):
+                return true
+            case (.failed, .failed):
+                return true
+            default:
+                return false
+            }
+        }
     }
     
     // MARK: - Init
-    init(_ service: TrackingService) {
+    init(_ service: TrackingServiceProtocol) {
         self.service = service
     }
     
@@ -44,6 +60,7 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
             let data = try await service.fetchTrackings()
             guard let trackings = data else {
                 self.state = .failed(error: TrackingServiceError.failed)
+                self.hasError = true
                 return
             }
             self.trackings = trackings
@@ -63,6 +80,7 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
                                                        carrier: .correios)
             guard let tracking = data else {
                 self.state = .failed(error: TrackingServiceError.failed)
+                self.hasError = true
                 return
             }
             self.selectedTracking = tracking
