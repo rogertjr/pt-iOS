@@ -7,3 +7,6 @@
     <img src="https://img.shields.io/badge/SwiftUI-3.0-red.svg" />
     <img src="https://img.shields.io/badge/Core-Data-blue" />
 </p>
+
+## WIP Demo
+![Demo PT](demo/demo.gif)
