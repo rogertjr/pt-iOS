@@ -34,31 +34,39 @@ struct TrackingListView: View {
                     customMenu()
                     
                         if viewModel.trackings.count > 0 {
-                            List(viewModel.trackings) { tracking in
-                                TrackingCellView(tracking: tracking)
-                                    .environmentObject(viewModel)
-                                    .environmentObject(appViewModel)
-                                    .background {
-                                        Color("Background")
-                                            .ignoresSafeArea()
-                                    }
-                                    .listRowSeparator(.hidden)
-                                    .listRowBackground(Color("Background"))
-                            }
-                            .background {
-                                Color("Background")
-                                    .ignoresSafeArea()
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .edgesIgnoringSafeArea([.leading, .trailing])
-                            .listStyle(PlainListStyle())
-                            .refreshable {
-                                Task {
-                                    await viewModel.fetchTrackings()
+                            let filteredTrackings = viewModel.filterTrackings()
+                            if filteredTrackings.count > 0 {
+                                List(filteredTrackings) { tracking in
+                                    TrackingCellView(tracking: tracking)
+                                        .environmentObject(viewModel)
+                                        .environmentObject(appViewModel)
+                                        .background {
+                                            Color("Background")
+                                                .ignoresSafeArea()
+                                        }
+                                        .listRowSeparator(.hidden)
+                                        .listRowBackground(Color("Background"))
                                 }
+                                .background {
+                                    Color("Background")
+                                        .ignoresSafeArea()
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .edgesIgnoringSafeArea([.leading, .trailing])
+                                .listStyle(PlainListStyle())
+                                .refreshable {
+                                    Task {
+                                        await viewModel.fetchTrackings()
+                                    }
+                                }
+                            } else {
+                                let title = viewModel.currentMenu == .delivered
+                                    ? "Não há encomendas entregues"
+                                    : "Não há encomendas em trânsito"
+                                emptyView(title)
                             }
                         } else {
-                            emptyView
+                            emptyView("Não há encomendas cadastradas")
                         }
                 }
                 .background {
@@ -106,8 +114,9 @@ struct TrackingListView: View {
 
 // MARK: - Subviews
 private extension TrackingListView {
-    var emptyView: some View {
-        Text("Não há encomendas cadastradas")
+    @ViewBuilder
+    func emptyView(_ title: String) -> some View {
+        Text(title)
             .font(.subheadline.bold())
             .foregroundColor(Color("Black"))
             .frame(maxWidth: .infinity,

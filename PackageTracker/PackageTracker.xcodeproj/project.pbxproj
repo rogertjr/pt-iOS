@@ -16,6 +16,7 @@
 		37A04972284CF6F400A81A7E /* MockTrackingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A04971284CF6F400A81A7E /* MockTrackingService.swift */; };
 		37A04978284D044400A81A7E /* NewTrackingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A04977284D044400A81A7E /* NewTrackingViewModelTests.swift */; };
 		37A0497B284D07E400A81A7E /* TrackingDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A0497A284D07E400A81A7E /* TrackingDetailViewModelTests.swift */; };
+		37A93ADA285AA28D001DC006 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A93AD9285AA28D001DC006 /* Tag.swift */; };
 		37DB9DA02849817F000E6F73 /* NewTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */; };
 		37DB9DA228498184000E6F73 /* NewTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */; };
 		37DB9DA6284A46C2000E6F73 /* Carrier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37DB9DA5284A46C2000E6F73 /* Carrier.swift */; };
@@ -59,6 +60,7 @@
 		37A04971284CF6F400A81A7E /* MockTrackingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTrackingService.swift; sourceTree = "<group>"; };
 		37A04977284D044400A81A7E /* NewTrackingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingViewModelTests.swift; sourceTree = "<group>"; };
 		37A0497A284D07E400A81A7E /* TrackingDetailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingDetailViewModelTests.swift; sourceTree = "<group>"; };
+		37A93AD9285AA28D001DC006 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		37DB9D9F2849817F000E6F73 /* NewTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingView.swift; sourceTree = "<group>"; };
 		37DB9DA128498184000E6F73 /* NewTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTrackingViewModel.swift; sourceTree = "<group>"; };
 		37DB9DA5284A46C2000E6F73 /* Carrier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Carrier.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 			isa = PBXGroup;
 			children = (
 				37DB9DA5284A46C2000E6F73 /* Carrier.swift */,
+				37A93AD9285AA28D001DC006 /* Tag.swift */,
 			);
 			path = Enum;
 			sourceTree = "<group>";
@@ -513,6 +516,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37A93ADA285AA28D001DC006 /* Tag.swift in Sources */,
 				37FC24E0284696E100149207 /* TrackingDetailCellView.swift in Sources */,
 				376918E3284ADC2B00FFAA58 /* TrackingDetailViewModel.swift in Sources */,
 				376918E0284AD23000FFAA58 /* TrackingListData.swift in Sources */,

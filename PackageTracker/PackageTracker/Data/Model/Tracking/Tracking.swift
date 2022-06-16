@@ -11,7 +11,7 @@ struct Tracking: Identifiable, Decodable {
     var id: String
     var expectedDelivery: String?
     var trackingNumber: String?
-    var tag: String?
+    var tag: Tag?
     var subtagMessage: String?
     var title: String?
     var checkpoints: [Checkpoint]? = []
@@ -32,7 +32,7 @@ extension Tracking {
     static let dummyData: Tracking = Tracking(id: "asdasd123asd12",
                                               expectedDelivery: nil,
                                               trackingNumber: "OU317658744BR",
-                                              tag: "Delivered",
+                                              tag: .delivered,
                                               subtagMessage: "Picked up by customer",
                                               title: "Test",
                                               checkpoints: [Checkpoint.dummyData])

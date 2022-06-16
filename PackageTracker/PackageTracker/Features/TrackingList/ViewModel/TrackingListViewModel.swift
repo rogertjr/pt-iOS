@@ -51,6 +51,18 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
         self.service = service
     }
     
+    // MARK: - Helpers
+    func filterTrackings() -> [Tracking] {
+        switch currentMenu {
+        case .all:
+            return trackings
+        case .inTransit:
+            return trackings.filter { $0.tag != .delivered }
+        case .delivered:
+            return trackings.filter { $0.tag == .delivered }
+        }
+    }
+    
     // MARK: - Network
     func fetchTrackings() async {
         state = .loading
