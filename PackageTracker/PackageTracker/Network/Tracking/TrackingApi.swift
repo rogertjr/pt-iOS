@@ -10,12 +10,12 @@ import Foundation
 enum TrackingApi {
     case fetchTrackings
     case fetchTracking(_ trackingNumber: String, carrier: Carrier)
-    case saveNewTracking(_ model: Package)
+    case createTracking(_ model: Package)
     case deleteTracking(_ trackingNumber: String, carrier: Carrier)
 }
 
 extension TrackingApi {
-    static let baseUrl = "https://api.aftership.com"
+    static let baseUrl = "https://api.trackingmore.com"
     static let apiVersion = "v4"
     
     var path: String {
@@ -30,8 +30,8 @@ extension TrackingApi {
                           carrier.rawValue,
                           trackingNumer)
             
-        case .saveNewTracking:
-            return String(format: "/%@/trackings",
+        case .createTracking:
+            return String(format: "/%@/trackings/create",
                           TrackingApi.apiVersion)
             
         case let .deleteTracking(trackingNumer, carrier):
