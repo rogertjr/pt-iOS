@@ -6,43 +6,43 @@
 //
 
 import Foundation
+import Combine
 
 protocol TrackingListViewModelProtocol: ObservableObject {
     func fetchTrackings() async
-    func fetchTrackingDetails(_ tracking: Tracking) async
 }
 
 final class TrackingListViewModel: TrackingListViewModelProtocol {
     // MARK: - Properties
     private let service: TrackingServiceProtocol
     
-    @Published var currentMenu: MenuType = .all
     @Published private(set) var state: State = .idle
     @Published var hasError: Bool = false
-    @Published var trackings: [Tracking] = []
-    @Published var selectedTracking: Tracking?
+    @Published var trackings: [TrackingData] = []
+    @Published var selectedTracking: TrackingData?
 	
-	var isLoading: Bool { state == .loading }
-	@Published var seachedText: String = ""
-	
-	@Published var selectedStatus: TrackingStatus = .active
+	var isLoading: Bool = false
+	@Published var searchedText: String = ""
+    @Published var searchedTrackings: [TrackingData]?
+	@Published var selectedStatus: DeliveryStatus = .transit
+    
+    var subscriptions = Set<AnyCancellable>()
     
     enum State: Equatable {
         case idle
         case loading
         case success
         case failed(error: Error)
+        case finishedLoading
         
         static func == (lhs: TrackingListViewModel.State,
                         rhs: TrackingListViewModel.State) -> Bool {
             switch (lhs, rhs) {
-            case (.idle, .idle):
-                return true
-            case (.loading, .loading):
-                return true
-            case (.success, .success):
-                return true
-            case (.failed, .failed):
+            case (.idle, .idle),
+                (.loading, .loading),
+                (.success, .success),
+                (.failed, .failed),
+                (.finishedLoading, .finishedLoading):
                 return true
             default:
                 return false
@@ -53,66 +53,66 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
     // MARK: - Init
     init(_ service: TrackingServiceProtocol) {
         self.service = service
+        
+        $searchedText
+            .removeDuplicates()
+            .dropFirst()
+            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)
+            .sink { [weak self] search in
+                guard let self else { return }
+                if !search.isEmpty {
+                    self.filterTrackings(by: search)
+                } else {
+                    self.searchedTrackings = nil
+                }
+                
+            }
+            .store(in: &subscriptions)
     }
     
     // MARK: - Helpers
-    func filterTrackings() -> [Tracking] {
-        switch currentMenu {
-        case .all:
-            return trackings
-        case .inTransit:
-            return trackings.filter { $0.tag != .delivered }
-        case .delivered:
-            return trackings.filter { $0.tag == .delivered }
+    private func filterTrackings(by search: String) {
+        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+            guard let self else { return }
+            
+            let result = self.trackings
+                .lazy
+                .filter { tracking in
+                    return tracking.title?.lowercased().contains(search.lowercased()) ?? false
+                }
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.searchedTrackings = result.compactMap({ $0 }).filter({ $0.deliveryStatus == self?.selectedStatus })
+            }
         }
     }
     
     // MARK: - Network
 	@MainActor
     func fetchTrackings() async {
+        guard !isLoading else { return }
         state = .loading
+        isLoading = true
         hasError = false
-		
-		defer { state = .idle }
+        
+        defer {
+            state = .finishedLoading
+            isLoading = false
+        }
         
         do {
-            let data = try await service.fetchTrackings()
+            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
+            let data = try await service.fetchTrackings(false)
             guard let trackings = data else {
-                self.state = .failed(error: TrackingServiceError.failed)
+                self.state = .failed(error: TrackingService.NetworkingError.invalidData)
                 self.hasError = true
                 return
             }
             self.trackings = trackings
             self.state = .success
         } catch {
-            self.state = .failed(error: error)
             self.hasError = true
-        }
-    }
-    
-	@MainActor
-    func fetchTrackingDetails(_ tracking: Tracking) async {
-        state = .loading
-        hasError = false
-		
-		defer { state = .idle }
-        
-        do {
-            let data = try await service.fetchTracking(tracking.trackingNumber ?? "",
-                                                       carrier: .correios)
-            guard let tracking = data else {
-                self.state = .failed(error: TrackingServiceError.failed)
-                self.hasError = true
-                return
-            }
-            self.selectedTracking = tracking
-            if let selectedIndex = self.trackings.firstIndex(where: { $0.id == tracking.id }) {
-                self.trackings[selectedIndex] = tracking
-            }
-            self.state = .success
-        } catch {
             self.state = .failed(error: error)
-            self.hasError = true
         }
     }
 }

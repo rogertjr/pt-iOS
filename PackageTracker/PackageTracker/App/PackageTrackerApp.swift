@@ -10,14 +10,13 @@ import SwiftUI
 @main
 struct PackageTrackerApp: App {
     // MARK: - Properties
-//    @Namespace var animation
-    @StateObject var appViewModel = AppViewModel()
     
     // MARK: - Layout
     var body: some Scene {
         WindowGroup {
             TrackingListView()
-                .environmentObject(appViewModel)
+                .tint(.primary)
+                .foregroundStyle(.primary)
 				.preferredColorScheme(.dark)
         }
     }

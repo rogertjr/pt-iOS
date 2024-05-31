@@ -11,7 +11,6 @@ struct NewTrackingView: View {
     // MARK: - Properties
     @ObservedObject var viewModel: NewTrackingViewModel = NewTrackingViewModel(TrackingService())
     @EnvironmentObject var trackingListViewModel: TrackingListViewModel
-    @EnvironmentObject var appViewModel: AppViewModel
     
     // MARK: - Layout
     var body: some View {
@@ -65,7 +64,7 @@ private extension NewTrackingView {
     var backButtonView: some View {
         Button {
             withAnimation(.easeInOut.delay(0.07)) {
-                appViewModel.showNewTrackingView = false
+//                appViewModel.showNewTrackingView = false
             }
         } label: {
             Image(systemName: "chevron.left")
@@ -127,7 +126,7 @@ private extension NewTrackingView {
                 case let .success(tracking):
                     trackingListViewModel.trackings.append(tracking)
                     withAnimation(.easeInOut.delay(0.03)) {
-                        appViewModel.showNewTrackingView = false
+//                        appViewModel.showNewTrackingView = false
                     }
                 default:
                     return
@@ -156,6 +155,6 @@ private extension NewTrackingView {
 struct NewTrackingView_PrewViews: PreviewProvider {
     static var previews: some View {
         NewTrackingView()
-            .environmentObject(AppViewModel())
+//            .environmentObject(AppViewModel())
     }
 }

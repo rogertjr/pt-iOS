@@ -22,7 +22,7 @@ final class TrackingDetailViewModel: TrackingDetailViewModelProtocol {
     enum State: Equatable {
         case na
         case loading
-        case success(tracking: Tracking)
+        case success(tracking: TrackingResponse)
         case failed(error: Error)
         
         static func == (lhs: TrackingDetailViewModel.State,
@@ -49,16 +49,16 @@ final class TrackingDetailViewModel: TrackingDetailViewModelProtocol {
     
     // MARK: - Network
     func deleteTracking(_ trackingNumber: String) async {
-        state = .loading
-        hasError = false
-        
-        do {
-            let tracking = try await service.deleteTracking(trackingNumber, carrier: .correios)
-            
-            self.state = .success(tracking: tracking)
-        } catch {
-            self.state = .failed(error: error)
-            self.hasError = true
-        }
+//        state = .loading
+//        hasError = false
+//        
+//        do {
+//            let tracking = try await service.deleteTracking(trackingNumber)
+//            
+//            self.state = .success(tracking: tracking)
+//        } catch {
+//            self.state = .failed(error: error)
+//            self.hasError = true
+//        }
     }
 }

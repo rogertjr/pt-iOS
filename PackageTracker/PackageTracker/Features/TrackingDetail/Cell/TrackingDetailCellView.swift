@@ -7,52 +7,70 @@
 
 import SwiftUI
 
+extension View {
+    func format(_ date: Date, dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = dateStyle
+        formatter.timeStyle = timeStyle
+        formatter.doesRelativeDateFormatting = true
+        return formatter.string(from: date)
+    }
+}
+
 struct TrackingDetailCellView: View {
     // MARK: - Properties
-    var checkpoint: Checkpoint
+    var info: TrackInfo
     
     // MARK: - Layout
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            dateLabelView
+            
+            if let date = try? Date(info.checkpointDate ?? "", strategy: .iso8601) {
+                dateLabelView(date)
+            }
+            
             statusLabelView
             
-            HStack(spacing: 8) {
-                iconLocationView("pin.fill", color: Color("Black"))
-                locationLabelView(checkpoint.location ?? "")
+            if let location = info.location,
+               let index = location.lastIndex(of: " ") {
+                
+                HStack(spacing: 8) {
+                    iconLocationView("pin.fill", color: Color("Black"))
+                    locationLabelView(String(location.suffix(from: index)))
+                }
+                .padding(.bottom, 8)
             }
-            .padding(.bottom, 8)
         }
         .padding(.leading, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(.detailBackground)
+        )
     }
 }
 
 // MARK: - Subviews
 private extension TrackingDetailCellView {
-    var dateLabelView: some View {
-        Text(checkpoint.checkpointTime?.dateFormatted() ?? "")
-            .font(.caption2)
+    func dateLabelView(_ date: Date) -> some View {
+        Text(format(date, dateStyle: .short, timeStyle: .medium))
+            .font(.subheadline)
             .bold()
-            .foregroundColor(.gray)
+            .foregroundStyle(.primary)
             .fixedSize()
             .padding(.top, 8)
     }
     
     var statusLabelView: some View {
-        Text(checkpoint.message ?? "")
-            .foregroundColor(Color("Black"))
-            .font(.system(size: 16,
-                          weight: .bold,
-                          design: .default))
+        Text(info.trackingDetail ?? "")
+            .foregroundStyle(.primary)
+            .font(.system(size: 16, weight: .bold, design: .default))
     }
     
     @ViewBuilder
     func locationLabelView(_ location: String) -> some View {
         Text(location)
-            .font(.system(size: 14,
-                          weight: .regular,
-                          design: .default))
-            .foregroundColor(Color("Black"))
+            .font(.subheadline)
+            .foregroundStyle(.primary)
     }
     
     @ViewBuilder
@@ -60,15 +78,18 @@ private extension TrackingDetailCellView {
         Image(systemName: systemName)
             .resizable()
             .aspectRatio(contentMode: .fit)
-            .foregroundColor(color)
+            .foregroundStyle(.primary)
             .frame(width: 16, height: 16)
     }
 }
 
-// MARK: - PreviewProvider
-struct TrackingDetailCellView_Previews: PreviewProvider {
-    static var previews: some View {
-        TrackingDetailCellView(checkpoint: Checkpoint.dummyData)
-            .previewLayout(.sizeThatFits)
+// MARK: - Preview
+#Preview {
+    List {
+        TrackingDetailCellView(info: .dummyData)
+        TrackingDetailCellView(info: .dummyData)
+        TrackingDetailCellView(info: .dummyData)
     }
+    .previewLayout(.sizeThatFits)
+    .preferredColorScheme(.dark)
 }

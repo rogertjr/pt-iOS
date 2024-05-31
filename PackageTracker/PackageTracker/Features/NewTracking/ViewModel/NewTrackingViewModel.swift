@@ -28,7 +28,7 @@ final class NewTrackingViewModel: NewTrackingViewModelProtocol {
     enum State: Equatable {
         case na
         case loading
-        case success(tracking: Tracking)
+        case success(tracking: TrackingData)
         case failed(error: Error)
         
         static func == (lhs: NewTrackingViewModel.State,
@@ -55,17 +55,17 @@ final class NewTrackingViewModel: NewTrackingViewModelProtocol {
     
     // MARK: - Network
     func saveNewTracking() async {
-        state = .loading
-        hasError = false
-        
-        do {
-            let model = Package(title: packageName, tracking: trackingNumber)
-            let tracking = try await service.saveNewTracking(model)
-            
-            self.state = .success(tracking: tracking)
-        } catch {
-            self.state = .failed(error: error)
-            self.hasError = true
-        }
+//        state = .loading
+//        hasError = false
+//        
+//        do {
+//            let model = Package(title: packageName, tracking: trackingNumber)
+//            let tracking = try await service.saveNewTracking(model)
+//            
+//            self.state = .success(tracking: tracking)
+//        } catch {
+//            self.state = .failed(error: error)
+//            self.hasError = true
+//        }
     }
 }

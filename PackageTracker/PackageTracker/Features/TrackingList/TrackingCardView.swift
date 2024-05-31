@@ -16,7 +16,7 @@ struct TrackingCardView: View {
 		: Color(UIColor.systemGroupedBackground)
 	}
 	
-	var tracking: Tracking
+	var tracking: TrackingData
 	@Binding var isLoading: Bool
 	
 	// MARK: - UI Elements
@@ -25,7 +25,7 @@ struct TrackingCardView: View {
 			mapView
 			VStack(alignment: .leading, spacing: 10) {
 				cardHeaderView
-				if let lastMessage = tracking.subtagMessage {
+				if let lastMessage = tracking.latestEvent {
 					lastStatusView(lastMessage)
 				}
 				detailButtonView
@@ -50,12 +50,12 @@ struct TrackingCardView: View {
 private extension TrackingCardView {
 	var mapView: some View {
 		Group {
-			Image(systemName: "map")
+			Image(systemName: "cube.box")
 				.resizable()
-				.aspectRatio(contentMode: .fill)
+				.aspectRatio(contentMode: .fit)
 				.foregroundStyle(.white)
 		}
-		.frame(width: 100)
+		.frame(width: 60)
 		.padding()
 		.background {
 			RoundedRectangle(cornerRadius: 20, style: .continuous)
@@ -69,7 +69,7 @@ private extension TrackingCardView {
 				.bold()
 				.foregroundStyle(.primary)
 			
-			Text(tracking.trackingNumber ?? "")
+			Text(tracking.trackingNumber)
 				.font(.caption2.bold())
 				.foregroundStyle(.primary)
 		}
@@ -77,8 +77,12 @@ private extension TrackingCardView {
 	
 	@ViewBuilder
 	func lastStatusView(_ status: String) -> some View {
-		Text(status)
+        Text(status.prefix(while: { $0 != "," }))
 			.font(.system(size: 14))
+            .minimumScaleFactor(0.7)
+            .multilineTextAlignment(.leading)
+            .lineLimit(0)
+            .truncationMode(.tail)
 			.foregroundStyle(.primary)
 	}
 	
@@ -104,14 +108,14 @@ private extension TrackingCardView {
 
 // MARK: - Preview
 #Preview {
+    let tracking = TrackingResponse.dummyData.first!
+    
 	return NavigationStack {
 		VStack {
-			TrackingCardView(tracking: Tracking.dummyData,
-							 isLoading: .constant(true))
+            TrackingCardView(tracking: tracking, isLoading: .constant(true))
 			.frame(height: 150)
 			
-			TrackingCardView(tracking: Tracking.dummyData,
-							 isLoading: .constant(false))
+            TrackingCardView(tracking: tracking, isLoading: .constant(false))
 			.frame(height: 150)
 		}
 	}
