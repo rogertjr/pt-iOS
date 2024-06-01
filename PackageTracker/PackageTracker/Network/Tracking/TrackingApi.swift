@@ -68,8 +68,8 @@ extension TrackingApi {
 				"courier_code": "brazil-correios",
 				"items_amount": "10"
             ]
-        default:
-            return nil
+		case let .deleteTracking(id):
+			return ["id": id]
         }
     }
     

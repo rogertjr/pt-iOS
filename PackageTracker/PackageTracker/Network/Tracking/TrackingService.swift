@@ -10,7 +10,7 @@ import Foundation
 protocol TrackingServiceProtocol {
     func fetchTrackings(_ isArchived: Bool) async throws -> [TrackingData]?
     func createTracking(_ model: Package) async throws -> TrackingResponse
-//    func deleteTracking(_ id: String) async throws -> Tracking
+    func deleteTracking(_ id: String) async throws -> [TrackingData]
 }
 
 extension TrackingServiceProtocol {
@@ -100,17 +100,22 @@ struct TrackingService: TrackingServiceProtocol {
     }
     
     /// Deletes a tracking by its number
-//    func deleteTracking(_ trackingNumber: String, carrier: Carrier) async throws -> Tracking {
-//        let urlSession = URLSession.shared
-//        let endpoint = TrackingApi.deleteTracking(trackingNumber, carrier: carrier)
-//        let (data, response) = try await urlSession.data(for: endpoint.request)
-//                
-//        guard let response = response as? HTTPURLResponse,
-//              response.statusCode == 200 else {
-//                throw TrackingServiceError.invalidStatusCode
-//        }
-//        
-//        let trackingData = try JSONDecoder().decode(TrackingDataResponse.self, from: data)
-//        return trackingData.data.tracking
-//    }
+	///
+	func deleteTracking(_ id: String) async throws -> [TrackingData] {
+		guard let endpointRequest = TrackingApi.deleteTracking(id).request else {
+			throw NetworkingError.invalidURL
+		}
+		
+		let (data, response) = try await URLSession.shared.data(for: endpointRequest)
+		
+		guard let response = response as? HTTPURLResponse,
+			  (200...300) ~= response.statusCode else {
+			let statusCode = (response as! HTTPURLResponse).statusCode
+			debugLog(endpointRequest, error: NetworkingError.invalidStatusCode(statusCode))
+			throw NetworkingError.invalidStatusCode(statusCode)
+		}
+		
+		debugLog(endpointRequest,response: response, responseData: data)
+		return try JSONDecoder().decode(TrackingResponse.self, from: data).data
+	}
 }

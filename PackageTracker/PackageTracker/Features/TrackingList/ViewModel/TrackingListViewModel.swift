@@ -80,13 +80,13 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
         hasError = false
         
         defer {
-            state = .finishedLoading
+            state = .idle
             isLoading = false
 			needsRefresh = false
         }
         
         do {
-//            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
+            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
             let data = try await service.fetchTrackings(false)
             guard let trackings = data else {
                 self.state = .failed(error: TrackingService.NetworkingError.invalidData)
@@ -108,15 +108,15 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
 		hasError = false
 		
 		defer {
-			state = .finishedLoading
+			state = .idle
 			isLoading = false
 			needsRefresh = true
 		}
 		
 		do {
-			try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
+//			try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
 			let model = Package(title: packageName, trackingNumber: trackingNumber)
-//			_ = try await service.createTracking(model)
+			_ = try await service.createTracking(model)
 			
 			self.state = .success
 		} catch {
@@ -127,11 +127,22 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
 	
 	@MainActor
 	func deleteTracking(by id: String) async {
+		state = .loading
+		isLoading = true
+		hasError = false
 		
 		defer {
-			state = .finishedLoading
+			state = .idle
 			isLoading = false
 			needsRefresh = true
+		}
+		
+		do {
+			_ = try await service.deleteTracking(id)
+			self.state = .success
+		} catch {
+			self.state = .failed(error: error)
+			self.hasError = true
 		}
 	}
 	

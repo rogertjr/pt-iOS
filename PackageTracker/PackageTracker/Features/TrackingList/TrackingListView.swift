@@ -17,23 +17,21 @@ struct TrackingListView: View {
     // MARK: - Layout
     var body: some View {
         NavigationStack {
-            ScrollView {
-                pickerView
-                
-                Divider()
-                    .padding(.vertical)
-                
-                switch viewModel.state {
-                case .loading:
-                    skeletonView()
-                case .failed(let error):
-                    ContentUnavailableView(label: {
-                        Label(error.localizedDescription, systemImage: "exclamationmark.triangle")
-                    })
-                default:
-                    listView
-                }
-            }
+			ScrollView {
+				pickerView
+				
+				switch viewModel.state {
+				case .loading:
+					skeletonView()
+				case .failed(let error):
+					ContentUnavailableView(label: {
+						Label(error.localizedDescription, systemImage: "exclamationmark.triangle")
+					})
+				default:
+					listView
+						.padding(.top, 8)
+				}
+			}
             .navigationTitle("Trackings")
             .searchable(text: $viewModel.searchedText, placement: .automatic)
             .autocorrectionDisabled(true)
@@ -70,39 +68,44 @@ struct TrackingListView: View {
 private extension TrackingListView {
     @ViewBuilder
     var listView: some View {
-        if !viewModel.searchedText.isEmpty,
-           let searchedTrackings = viewModel.searchedTrackings,
-           searchedTrackings.count > 0 {
-            
-            VStack {
-                ForEach(searchedTrackings, id: \.id) { tracking in
-                    TrackingCardView(tracking: tracking, isLoading: $viewModel.isLoading)
-                }
-            }
-        } else if !viewModel.searchedText.isEmpty && viewModel.searchedTrackings == nil {
-            ContentUnavailableView.search(text: viewModel.searchedText)
-                .deferredRendering(for: 0.8)
+        if !viewModel.searchedText.isEmpty, let searchedTrackings = viewModel.searchedTrackings {
+			
+			if !viewModel.searchedText.isEmpty && viewModel.searchedTrackings?.count == 0 {
+				ContentUnavailableView.search(text: viewModel.searchedText)
+					.deferredRendering(for: 0.8)
+			} else {
+				ForEach(searchedTrackings, id: \.id) { tracking in
+					TrackingCardView(tracking: tracking, isLoading: $viewModel.isLoading)
+				}
+			}
         } else {
-            VStack {
-                if viewModel.trackings.count > 0 {
-					ForEach(viewModel.trackings.filter({
-						viewModel.selectedStatus != .delivered
-							? $0.deliveryStatus != .delivered
-							: $0.deliveryStatus == .delivered
-					}), id: \.id) { tracking in
+			if viewModel.trackings.count > 0 {
+				ForEach(viewModel.trackings.filter({
+					viewModel.selectedStatus != .delivered
+					? $0.deliveryStatus != .delivered
+					: $0.deliveryStatus == .delivered
+				}), id: \.id) { tracking in
+					SwipeAction(cornerRadius: 10, direction: .trailing) {
 						NavigationLink {
 							TrackingDetailView(tracking: tracking)
 								.environmentObject(viewModel)
 						} label: {
 							TrackingCardView(tracking: tracking, isLoading: $viewModel.isLoading)
 						}
-                    }
-                } else {
-                    ContentUnavailableView(label: {
-                        Label("No trackings where added yet", systemImage: "truck.box")
-                    })
-                }
-            }
+					} actions: {
+						Action(tint: .red, icon: "trash") {
+							Task {
+								await viewModel.deleteTracking(by: tracking.id)
+							}
+						}
+					}
+					
+				}
+			} else {
+				ContentUnavailableView(label: {
+					Label("No trackings where added yet", systemImage: "truck.box")
+				})
+			}
         }
     }
     

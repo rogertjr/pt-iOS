@@ -22,11 +22,11 @@ extension TrackingResponse {
 
 // MARK: - Datum
 struct TrackingData: Codable {
-    let id, trackingNumber, courierCode, orderNumber: String
-    let orderDate, updateAt: String?
-    let createdAt: String
+    let id, trackingNumber, courierCode: String
+    let orderNumber, orderDate, updateAt: String?
+    let createdAt: String?
     let deliveryStatus: DeliveryStatus?
-    let archived: String
+    let archived: String?
     let updating: Bool?
     let destinationCountry, destinationState, destinationCity, originCountry: String?
     let originState, originCity, trackingPostalCode, trackingShipDate: String?
