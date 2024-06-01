@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct Package: Codable {
-	var note: String
+	var note: String?
     var title: String
 //	var language: String
 //	var courierCode: String
-	var orderNumber: String
-	var customerName: String
+	var orderNumber: String?
+	var customerName: String?
 	var trackingNumber: String
 	
 	private enum CodingKeys: String, CodingKey {

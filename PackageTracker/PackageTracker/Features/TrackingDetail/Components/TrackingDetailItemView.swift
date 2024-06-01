@@ -17,7 +17,7 @@ extension View {
     }
 }
 
-struct TrackingDetailCellView: View {
+struct TrackingDetailItemView: View {
     // MARK: - Properties
     var info: TrackInfo
     
@@ -32,8 +32,7 @@ struct TrackingDetailCellView: View {
             statusLabelView
             
             if let location = info.location,
-               let index = location.lastIndex(of: " ") {
-                
+                let index = location.lastIndex(of: " ") {
                 HStack(spacing: 8) {
                     iconLocationView("pin.fill", color: Color("Black"))
                     locationLabelView(String(location.suffix(from: index)))
@@ -50,7 +49,7 @@ struct TrackingDetailCellView: View {
 }
 
 // MARK: - Subviews
-private extension TrackingDetailCellView {
+private extension TrackingDetailItemView {
     func dateLabelView(_ date: Date) -> some View {
         Text(format(date, dateStyle: .short, timeStyle: .medium))
             .font(.subheadline)
@@ -86,9 +85,9 @@ private extension TrackingDetailCellView {
 // MARK: - Preview
 #Preview {
     List {
-        TrackingDetailCellView(info: .dummyData)
-        TrackingDetailCellView(info: .dummyData)
-        TrackingDetailCellView(info: .dummyData)
+        TrackingDetailItemView(info: .dummyData)
+        TrackingDetailItemView(info: .dummyData)
+        TrackingDetailItemView(info: .dummyData)
     }
     .previewLayout(.sizeThatFits)
     .preferredColorScheme(.dark)

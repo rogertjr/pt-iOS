@@ -9,26 +9,15 @@ import SwiftUI
 
 struct NewTrackingView: View {
     // MARK: - Properties
-    @ObservedObject var viewModel: NewTrackingViewModel = NewTrackingViewModel(TrackingService())
-    @EnvironmentObject var trackingListViewModel: TrackingListViewModel
+	@EnvironmentObject var viewModel: TrackingListViewModel
+    @Environment(\.colorScheme) var scheme
+	@Environment(\.dismiss) private var dismiss
     
     // MARK: - Layout
     var body: some View {
-        VStack {
-            switch viewModel.state {
-            case .loading:
-                LoadingView(backgroundColor: Color("Background"),
-                            foregroundColor: Color("Black"),
-                            title: "Carregando...")
-            default:
-                ZStack {
-                    HStack {
-                        backButtonView
-                        Spacer()
-                    }
-                    
-                    headerLabelView
-                }
+        ZStack {
+            VStack {
+                Spacer()
                 
                 VStack(spacing: 8) {
                     trackingFieldView
@@ -36,97 +25,81 @@ struct NewTrackingView: View {
                 }
                 .frame(maxHeight: .infinity,alignment: .center)
                 
+                Spacer()
                 saveButtonView
+                    .padding(.bottom, 16)
             }
+            .blur(radius: viewModel.isLoading ? 25 : 0)
+
+			if viewModel.isLoading {
+				ProgressView {
+					Label("Loading...", systemImage: "")
+				}
+			}
         }
-        .padding()
-        .background {
-            Color("Background")
-                .ignoresSafeArea()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .alert("Erro", isPresented: $viewModel.hasError, presenting: viewModel.state) { detail in
-            Button("Tentar novamente") {
-                Task {
-                    await viewModel.saveNewTracking()
-                }
-            }
-        } message: { detail in
-            if case let .failed(error) = detail {
-                Text(error.localizedDescription)
-            }
-        }
+        .padding(.horizontal, 16)
+        .navigationTitle("Add")
+		.alert(isPresented: $viewModel.hasError) {
+			Alert(title: Text("Oops!"),
+				  message: Text("Something went wrong."),
+				  primaryButton: .destructive(Text("Cancel"), action: { }),
+				  secondaryButton: .default(Text("Try Again"), action: {
+				Task {
+					await viewModel.createTracking()
+				}
+			}))
+		}
     }
 }
 
 // MARK: - Subviews
 private extension NewTrackingView {
-    var backButtonView: some View {
-        Button {
-            withAnimation(.easeInOut.delay(0.07)) {
-//                appViewModel.showNewTrackingView = false
-            }
-        } label: {
-            Image(systemName: "chevron.left")
-                .foregroundColor(Color("Black"))
-                .padding(12)
-                .background {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(.white)
-                }
-        }
-    }
-    
-    var headerLabelView: some View {
-        Text("Nova encomenda")
-            .font(.title2)
-            .fontWeight(.semibold)
-    }
-    
     var trackingFieldView: some View {
         Label {
-            TextField("Código de rastreio",
-                      text: $viewModel.trackingNumber)
-                .padding(.leading ,10)
+            TextField("Tracking Code", text: $viewModel.trackingNumber)
+                .padding(.leading, 10)
+                .autocorrectionDisabled()
+                .textCase(.uppercase)
         } icon: {
             Image(systemName: "barcode.viewfinder")
                 .font(.title3)
+                .tint(.primary)
         }
         .padding(.vertical, 20)
         .padding(.horizontal, 15)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(.white)
+                .fill(scheme == .dark ? .detailBackground : .cardBackground)
         }
     }
     
     var packageNameFieldView: some View {
         Label {
-            TextField("Nome da encomenda",
-                      text: $viewModel.packageName)
+            TextField("Title", text: $viewModel.packageName)
                 .padding(.leading ,10)
+                .autocorrectionDisabled()
         } icon: {
             Image(systemName: "shippingbox.fill")
                 .font(.title3)
+                .tint(.primary)
         }
         .padding(.vertical, 20)
         .padding(.horizontal, 15)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(.white)
+                .fill(scheme == .dark ? .detailBackground : .cardBackground)
         }
     }
     
     var saveButtonView: some View {
         Button(action: {
             Task {
-                await viewModel.saveNewTracking()
+                await viewModel.createTracking()
              
                 switch viewModel.state {
-                case let .success(tracking):
-                    trackingListViewModel.trackings.append(tracking)
-                    withAnimation(.easeInOut.delay(0.03)) {
-//                        appViewModel.showNewTrackingView = false
+                case .success:
+                    if !viewModel.hasError {
+                        dismiss()
                     }
                 default:
                     return
@@ -139,11 +112,10 @@ private extension NewTrackingView {
                 .padding(.vertical, 15)
                 .frame(maxWidth: .infinity)
                 .background {
-                    RoundedRectangle(cornerRadius: 12,
-                                     style: .continuous)
-                        .fill(Color("Black"))
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(scheme == .dark ? .white : .black)
                 }
-                .foregroundColor(.white)
+                .foregroundStyle(scheme == .dark ? .black : .white)
                 .padding(.bottom, 10)
         }
         .disabled(!viewModel.isAbleToContinue)
@@ -152,9 +124,10 @@ private extension NewTrackingView {
 }
 
 // MARK: - Preview
-struct NewTrackingView_PrewViews: PreviewProvider {
-    static var previews: some View {
+#Preview {
+    NavigationStack {
         NewTrackingView()
-//            .environmentObject(AppViewModel())
+			.environmentObject(TrackingListViewModel(TrackingService()))
     }
+    .preferredColorScheme(.dark)
 }

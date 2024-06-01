@@ -25,7 +25,7 @@ struct TrackingData: Codable {
     let id, trackingNumber, courierCode, orderNumber: String
     let orderDate, updateAt: String?
     let createdAt: String
-    let deliveryStatus: DeliveryStatus
+    let deliveryStatus: DeliveryStatus?
     let archived: String
     let updating: Bool?
     let destinationCountry, destinationState, destinationCity, originCountry: String?
@@ -163,8 +163,11 @@ extension TrackInfo {
                      rawStatus: nil)
     }
 }
+
 enum DeliveryStatus: String, CaseIterable, Codable {
-    case transit, delivered
+    case transit, delivered, pending
+	case inforeceived, pickup, undelivered
+	case exception, expired, notfound
 }
 
 // MARK: - Meta

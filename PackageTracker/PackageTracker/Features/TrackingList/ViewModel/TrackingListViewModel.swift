@@ -16,39 +16,24 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
     // MARK: - Properties
     private let service: TrackingServiceProtocol
     
-    @Published private(set) var state: State = .idle
+    @Published private(set) var state: ViewState = .idle
     @Published var hasError: Bool = false
     @Published var trackings: [TrackingData] = []
     @Published var selectedTracking: TrackingData?
-	
-	var isLoading: Bool = false
 	@Published var searchedText: String = ""
     @Published var searchedTrackings: [TrackingData]?
 	@Published var selectedStatus: DeliveryStatus = .transit
+	
+	@Published var trackingNumber: String = ""
+	@Published var packageName: String = ""
+	var isAbleToContinue: Bool {
+		!trackingNumber.isEmpty && !packageName.isEmpty
+	}
+	
+	var isLoading: Bool = false
+	var needsRefresh: Bool = true
     
     var subscriptions = Set<AnyCancellable>()
-    
-    enum State: Equatable {
-        case idle
-        case loading
-        case success
-        case failed(error: Error)
-        case finishedLoading
-        
-        static func == (lhs: TrackingListViewModel.State,
-                        rhs: TrackingListViewModel.State) -> Bool {
-            switch (lhs, rhs) {
-            case (.idle, .idle),
-                (.loading, .loading),
-                (.success, .success),
-                (.failed, .failed),
-                (.finishedLoading, .finishedLoading):
-                return true
-            default:
-                return false
-            }
-        }
-    }
     
     // MARK: - Init
     init(_ service: TrackingServiceProtocol) {
@@ -65,7 +50,6 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
                 } else {
                     self.searchedTrackings = nil
                 }
-                
             }
             .store(in: &subscriptions)
     }
@@ -98,10 +82,11 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
         defer {
             state = .finishedLoading
             isLoading = false
+			needsRefresh = false
         }
         
         do {
-            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
+//            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
             let data = try await service.fetchTrackings(false)
             guard let trackings = data else {
                 self.state = .failed(error: TrackingService.NetworkingError.invalidData)
@@ -115,4 +100,39 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
             self.state = .failed(error: error)
         }
     }
+	
+	@MainActor
+	func createTracking() async {
+		state = .loading
+		isLoading = true
+		hasError = false
+		
+		defer {
+			state = .finishedLoading
+			isLoading = false
+			needsRefresh = true
+		}
+		
+		do {
+			try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
+			let model = Package(title: packageName, trackingNumber: trackingNumber)
+//			_ = try await service.createTracking(model)
+			
+			self.state = .success
+		} catch {
+			self.state = .failed(error: error)
+			self.hasError = true
+		}
+	}
+	
+	@MainActor
+	func deleteTracking(by id: String) async {
+		
+		defer {
+			state = .finishedLoading
+			isLoading = false
+			needsRefresh = true
+		}
+	}
+	
 }

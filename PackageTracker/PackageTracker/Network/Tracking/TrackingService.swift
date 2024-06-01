@@ -10,7 +10,7 @@ import Foundation
 protocol TrackingServiceProtocol {
     func fetchTrackings(_ isArchived: Bool) async throws -> [TrackingData]?
     func createTracking(_ model: Package) async throws -> TrackingResponse
-//    func deleteTracking(_ trackingNumber: String, carrier: Carrier) async throws -> Tracking
+//    func deleteTracking(_ id: String) async throws -> Tracking
 }
 
 extension TrackingServiceProtocol {

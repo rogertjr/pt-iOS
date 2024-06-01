@@ -50,25 +50,23 @@ extension TrackingApi {
         }
     }
     
-    var queryItems: [URLQueryItem]? {
+	var queryItems: [String: String]? {
         switch self {
         case let .createTracking(model):
             return [
-                .init(name: "note", value: model.note),
-                .init(name: "title", value: model.title),
-                .init(name: "language", value: "en"),
-                .init(name: "courier_code", value: "brazil-correios"),
-                .init(name: "order_number", value: model.orderNumber),
-                .init(name: "customer_name", value: model.customerName),
-                .init(name: "tracking_number", value: model.trackingNumber)
-            ]
+				"title": model.title,
+				"language": "en",
+				"courier_code": "brazil-correios",
+				"customer_name": "packgeTrackerAPP",
+				"note": "iOSAPP",
+				"tracking_number": model.trackingNumber]
             
         case let .fetchTrackings(isArchived):
             return [
-                .init(name: "archived_status", value: isArchived ? "true" : "tracking"),
-                .init(name: "language", value: "en"),
-                .init(name: "courier_code", value: "brazil-correios"),
-                .init(name: "items_amount", value: "10")
+				"archived_status": (isArchived ? "true" : "tracking"),
+				"language": "en",
+				"courier_code": "brazil-correios",
+				"items_amount": "10"
             ]
         default:
             return nil
@@ -96,7 +94,8 @@ extension TrackingApi {
                 fatalError("🚨 - \(error.localizedDescription)")
             }
         default:
-            urlComponents.queryItems = queryItems
+			guard let queryItems else { return nil }
+			urlComponents.queryItems = queryItems.map({ URLQueryItem(name: $0.0, value: $0.1) })
         }
         
         return request

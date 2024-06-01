@@ -6,18 +6,24 @@
 //
 
 import SwiftUI
+import TipKit
 
 @main
 struct PackageTrackerApp: App {
-    // MARK: - Properties
-    
-    // MARK: - Layout
-    var body: some Scene {
-        WindowGroup {
-            TrackingListView()
-                .tint(.primary)
-                .foregroundStyle(.primary)
+	// MARK: - Properties
+	
+	// MARK: - Init
+	init() {
+		try? Tips.configure()
+	}
+	
+	// MARK: - Layout
+	var body: some Scene {
+		WindowGroup {
+			TrackingListView()
+				.tint(.primary)
+				.foregroundStyle(.primary)
 				.preferredColorScheme(.dark)
-        }
-    }
+		}
+	}
 }

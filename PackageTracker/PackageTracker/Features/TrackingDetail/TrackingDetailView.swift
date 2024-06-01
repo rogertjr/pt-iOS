@@ -15,6 +15,8 @@ extension CLLocationCoordinate2D {
 struct TrackingDetailView: View {
     // MARK: - Properties
     let tracking: TrackingData
+	@EnvironmentObject var viewModel: TrackingListViewModel
+	@Environment(\.dismiss) private var dismiss
     
     private var checkpointLocation: String? {
         guard let location = tracking.originInfo?.trackinfo?.first?.location,
@@ -39,11 +41,11 @@ struct TrackingDetailView: View {
             }
             .frame(height: 250)
             
-            if let checkpoints = tracking.originInfo?.trackinfo {
+			if let checkpoints = tracking.originInfo?.trackinfo, checkpoints.count > 0 {
                 List {
                     Section("Checkpoints") {
                         ForEach(checkpoints, id: \.self) { checkpoint in
-                            TrackingDetailCellView(info: checkpoint)
+                            TrackingDetailItemView(info: checkpoint)
                         }
                     }
                 }
@@ -53,13 +55,30 @@ struct TrackingDetailView: View {
         }
         .navigationTitle(tracking.title ?? "Details")
         .navigationBarTitleDisplayMode(.inline)
+		.toolbar {
+			ToolbarItem(placement: .topBarTrailing) {
+				Button(action: {
+					Task {
+						await viewModel.deleteTracking(by: tracking.id)
+						if viewModel.state == .success || viewModel.state == .finishedLoading {
+							dismiss()
+						}
+					}
+				}, label: {
+					Image(systemName: "trash")
+						.resizable()
+						.tint(.primary)
+				})
+			}
+		}
     }
 }
 
 // MARK: - Preview
 #Preview {
     return NavigationStack {
-        TrackingDetailView(tracking: TrackingResponse.dummyData.first!)
+		TrackingDetailView(tracking: TrackingResponse.dummyData.first!)
+		.environmentObject(TrackingListViewModel(TrackingService()))
     }
     .preferredColorScheme(.dark)
 }
