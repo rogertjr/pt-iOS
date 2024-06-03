@@ -73,7 +73,7 @@ struct TrackingDataDTO: Identifiable, Codable {
     }
 }
 
-// MARK: - Datum
+// MARK: - Data
 @Model
 class TrackingData {
     @Attribute(.unique) var id: String
@@ -137,7 +137,25 @@ class TrackingData {
     }
     
     convenience init(data: TrackingDataDTO) {
-        self.init(id: data.id, trackingNumber: data.trackingNumber, courierCode: data.courierCode, orderNumber: data.orderNumber, orderDate: data.orderDate, updateAt: data.updateAt, createdAt: data.createdAt, deliveryStatus: data.deliveryStatus, archived: data.archived, updating: data.updating, originState: data.originState, originCity: data.originCity, title: data.title, statusInfo: data.statusInfo, latestEvent: data.latestEvent, substatus: data.substatus, latestCheckpointTime: data.latestCheckpointTime, transitTime: data.transitTime, originInfo: data.originInfo)
+        self.init(id: data.id,
+                  trackingNumber: data.trackingNumber, 
+                  courierCode: data.courierCode, 
+                  orderNumber: data.orderNumber,
+                  orderDate: data.orderDate,
+                  updateAt: data.updateAt,
+                  createdAt: data.createdAt,
+                  deliveryStatus: data.deliveryStatus,
+                  archived: data.archived,
+                  updating: data.updating,
+                  originState: data.originState,
+                  originCity: data.originCity,
+                  title: data.title,
+                  statusInfo: data.statusInfo,
+                  latestEvent: data.latestEvent,
+                  substatus: data.substatus,
+                  latestCheckpointTime: data.latestCheckpointTime,
+                  transitTime: data.transitTime,
+                  originInfo: data.originInfo)
     }
 }
 

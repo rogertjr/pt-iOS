@@ -10,7 +10,7 @@ import MapKit
 import SwiftData
 
 extension CLLocationCoordinate2D {
-    static let SP = CLLocationCoordinate2D(latitude: 23.555, longitude: 46.6396)
+    static let SP = CLLocationCoordinate2D(latitude: -23.5475, longitude: -46.63611)
 }
 
 struct TrackingDetailView: View {
@@ -18,6 +18,11 @@ struct TrackingDetailView: View {
     let tracking: TrackingData
     @EnvironmentObject var viewModel: TrackingListViewModel
 	@Environment(\.dismiss) private var dismiss
+    
+    let position = MapCameraPosition.region(MKCoordinateRegion(
+        center: .SP,
+        span: .init(latitudeDelta: 1, longitudeDelta: 1)
+    ))
     
     private var checkpointLocation: String? {
         guard let location = tracking.originInfo?.trackinfo?.first?.location,
@@ -28,7 +33,7 @@ struct TrackingDetailView: View {
     // MARK: - Layout
     var body: some View {
         ScrollViewReader { _ in
-            Map {
+            Map(initialPosition: position, interactionModes: [.pan, .zoom]) {
                 Marker(checkpointLocation ?? "N/a", coordinate: .SP)
                 Annotation(checkpointLocation ?? "", coordinate: .SP) {
                     ZStack {
@@ -40,6 +45,7 @@ struct TrackingDetailView: View {
                     }
                 }
             }
+            .mapStyle(.standard)
             .frame(height: 250)
             
 			if let checkpoints = tracking.originInfo?.trackinfo, checkpoints.count > 0 {
@@ -81,13 +87,11 @@ struct TrackingDetailView: View {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: TrackingData.self, configurations: config)
         
-        let viewModel = TrackingListViewModel(TrackingService(),
-                                                               modelContext: container.mainContext)
+        let viewModel = TrackingListViewModel(TrackingService(), modelContext: container.mainContext)
         let data = TrackingResponseDTO.dummyData.first!
         
         return NavigationStack {
             TrackingDetailView(tracking: data)
-            NewTrackingView()
                 .environmentObject(viewModel)
         }
         .preferredColorScheme(.dark)

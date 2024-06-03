@@ -11,8 +11,9 @@ import Combine
 
 struct TrackingListView: View {
     // MARK: - Properties
-    @StateObject var viewModel: TrackingListViewModel
+    @State var viewModel: TrackingListViewModel
     @Environment(NetworkMonitor.self) private var networkMonitor
+    @AppStorage("needsRefresh") var needsRefresh: Bool = true
     @State private var isRotating: Bool = false
 	private var addTrackingTip = AddTrackingTip()
     private var dummyTracking: TrackingData { TrackingResponseDTO.dummyData.first! }
@@ -20,7 +21,7 @@ struct TrackingListView: View {
     // MARK: - Init
     init(_ modelContext: ModelContext) { 
         let viewModel = TrackingListViewModel(TrackingService(), modelContext: modelContext)
-        _viewModel = StateObject(wrappedValue: viewModel)
+        _viewModel = State(initialValue: viewModel)
     }
     
     // MARK: - Layout

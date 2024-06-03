@@ -130,8 +130,7 @@ private extension NewTrackingView {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: TrackingData.self, configurations: config)
         
-        let viewModel = TrackingListViewModel(TrackingService(),
-                                                               modelContext: container.mainContext)
+        let viewModel = TrackingListViewModel(TrackingService(), modelContext: container.mainContext)
         return NavigationStack {
             NewTrackingView()
                 .environmentObject(viewModel)

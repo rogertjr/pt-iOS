@@ -126,38 +126,3 @@ struct TrackingService: TrackingServiceProtocol {
         return .init(data: dto.data)
 	}
 }
-
-
-/*
- ====== REQUEST ======
-
-URL: https://api.trackingmore.com/v4/trackings/delete/9c2cdcc6651a09e36a7f32cd7828fe78
-HTTP METHOD: DELETE
-HEADERS:
-{
-  "Content-Type" : "application\/json",
-  "Accept" : "application\/json",
-  "Tracking-Api-Key" : "mqoj8fr9-7efz-gywk-kd59-7n84j8o0xqb1"
-}
-
- ====== RESPONSE ======
-
-CODE: 200
-HEADERS:
-{
-  "Date" : "Mon, 03 Jun 2024 16:41:27 GMT",
-  "access-control-allow-methods" : "GET, POST, PUT, GET, OPTIONS, DELETE",
-  "Content-Type" : "application\/json",
-  "Access-Control-Allow-Origin" : "*",
-  "Server" : "cloudflare",
-  "Content-Encoding" : "gzip",
-  "access-control-allow-headers" : "x-requested-with,content-type,tracking-api-key",
-  "cf-ray" : "88e1217b8b6c628a-GRU",
-  "cf-cache-status" : "DYNAMIC"
-}
-BODY:
-{"meta":{"code":200,"message":"Request response is successful"},"data":{"id":"9c2cdcc6651a09e36a7f32cd7828fe78","tracking_number":"NM391959583BR","courier_code":"brazil-correios"}}
-
- ====== END ======
- 
- */
