@@ -176,14 +176,16 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
         defer {
             state = .idle
             isLoading = false
-            needsRefresh = true
+            needsRefresh = false
         }
         
         do {
-            _ = try await service.deleteTracking(id)
-            // TODO: Fix predicate
-//            try modelContext.delete(model: TrackingData.self, where: #Predicate { $0.id == response.id })
-
+            let response = try await service.deleteTracking(id)
+            let id: String = response.id.description
+            
+            try modelContext.delete(model: TrackingData.self, where: #Predicate { $0.id == id })
+            await fetchFromLocal()
+            
             self.state = .success
         } catch {
             self.state = .failed(error: error)
