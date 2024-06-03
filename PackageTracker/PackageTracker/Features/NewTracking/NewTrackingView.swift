@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct NewTrackingView: View {
     // MARK: - Properties
-	@EnvironmentObject var viewModel: TrackingListViewModel
+    @EnvironmentObject var viewModel: TrackingListViewModel
     @Environment(\.colorScheme) var scheme
 	@Environment(\.dismiss) private var dismiss
     
@@ -125,9 +126,18 @@ private extension NewTrackingView {
 
 // MARK: - Preview
 #Preview {
-    NavigationStack {
-        NewTrackingView()
-			.environmentObject(TrackingListViewModel(TrackingService()))
+    do {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: TrackingData.self, configurations: config)
+        
+        let viewModel = TrackingListViewModel(TrackingService(),
+                                                               modelContext: container.mainContext)
+        return NavigationStack {
+            NewTrackingView()
+                .environmentObject(viewModel)
+        }
+        .preferredColorScheme(.dark)
+    } catch {
+        fatalError("Failed to build container")
     }
-    .preferredColorScheme(.dark)
 }

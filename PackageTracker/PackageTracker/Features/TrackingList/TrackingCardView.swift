@@ -108,7 +108,7 @@ private extension TrackingCardView {
 
 // MARK: - Preview
 #Preview {
-    let tracking = TrackingResponse.dummyData.first!
+    let tracking = TrackingResponseDTO.dummyData.first!
     
 	return NavigationStack {
 		VStack {

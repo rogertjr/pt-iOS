@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MapKit
+import SwiftData
 
 extension CLLocationCoordinate2D {
     static let SP = CLLocationCoordinate2D(latitude: 23.555, longitude: 46.6396)
@@ -15,7 +16,7 @@ extension CLLocationCoordinate2D {
 struct TrackingDetailView: View {
     // MARK: - Properties
     let tracking: TrackingData
-	@EnvironmentObject var viewModel: TrackingListViewModel
+    @EnvironmentObject var viewModel: TrackingListViewModel
 	@Environment(\.dismiss) private var dismiss
     
     private var checkpointLocation: String? {
@@ -76,9 +77,21 @@ struct TrackingDetailView: View {
 
 // MARK: - Preview
 #Preview {
-    return NavigationStack {
-		TrackingDetailView(tracking: TrackingResponse.dummyData.first!)
-		.environmentObject(TrackingListViewModel(TrackingService()))
+    do {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: TrackingData.self, configurations: config)
+        
+        let viewModel = TrackingListViewModel(TrackingService(),
+                                                               modelContext: container.mainContext)
+        let data = TrackingResponseDTO.dummyData.first!
+        
+        return NavigationStack {
+            TrackingDetailView(tracking: data)
+            NewTrackingView()
+                .environmentObject(viewModel)
+        }
+        .preferredColorScheme(.dark)
+    } catch {
+        fatalError("Failed to build container")
     }
-    .preferredColorScheme(.dark)
 }

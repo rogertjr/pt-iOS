@@ -6,13 +6,22 @@
 //
 
 import SwiftUI
+import SwiftData
+import Combine
 
 struct TrackingListView: View {
     // MARK: - Properties
-    @StateObject var viewModel: TrackingListViewModel = TrackingListViewModel(TrackingService())
+    @StateObject var viewModel: TrackingListViewModel
+    @Environment(NetworkMonitor.self) private var networkMonitor
     @State private var isRotating: Bool = false
 	private var addTrackingTip = AddTrackingTip()
-    private var dummyTracking: TrackingData { TrackingResponse.dummyData.first! }
+    private var dummyTracking: TrackingData { TrackingResponseDTO.dummyData.first! }
+    
+    // MARK: - Init
+    init(_ modelContext: ModelContext) { 
+        let viewModel = TrackingListViewModel(TrackingService(), modelContext: modelContext)
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     // MARK: - Layout
     var body: some View {
@@ -42,8 +51,10 @@ struct TrackingListView: View {
             }
             .task {
 				if viewModel.needsRefresh {
-					await viewModel.fetchTrackings()
-				}
+                    await viewModel.fetchFromRemote(networkMonitor.isConnected)
+                } else {
+                    await viewModel.fetchFromLocal()
+                }
 				
 				if viewModel.searchedText.isEmpty && viewModel.trackings.count < 1 {
 					AddTrackingTip.showTip = true
@@ -56,7 +67,7 @@ struct TrackingListView: View {
 					  primaryButton: .destructive(Text("Cancel"), action: { }),
 					  secondaryButton: .default(Text("Try Again"), action: {
 					Task {
-						await viewModel.fetchTrackings()
+                        await viewModel.fetchFromLocal()
 					}
 				}))
 			}
@@ -127,7 +138,7 @@ private extension TrackingListView {
         Button {
             Task {
                 isRotating.toggle()
-                await viewModel.fetchTrackings()
+                await viewModel.fetchFromRemote(networkMonitor.isConnected)
             }
         } label: {
             Image(systemName: "goforward")
@@ -161,9 +172,18 @@ private extension TrackingListView {
 
 // MARK: - Preview
 #Preview {
-    NavigationStack {
-        TrackingListView()
-            .tint(.primary)
+    do {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: TrackingData.self, configurations: config)
+        
+        return NavigationStack {
+            TrackingListView(container.mainContext)
+                .environment(NetworkMonitor())
+                .tint(.primary)
+                .modelContainer(container)
+        }
+        .preferredColorScheme(.dark)
+    } catch {
+        fatalError("Failed to build container")
     }
-    .preferredColorScheme(.dark)
 }

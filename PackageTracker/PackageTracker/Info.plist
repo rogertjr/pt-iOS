@@ -4,7 +4,7 @@
 <dict>
 	<key>TRACKINGMORE_API_KEY</key>
 	<string>mqoj8fr9-7efz-gywk-kd59-7n84j8o0xqb1</string>
-	<key>TRACKINGMORE_API_KEY_OLD</key>
-	<string>ASD</string>
+	<key>TRACKINGMORE_API_KEY_DEFAULT</key>
+	<string>&lt;YOUR_API_KEY_HERE&gt;</string>
 </dict>
 </plist>

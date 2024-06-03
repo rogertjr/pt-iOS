@@ -9,8 +9,8 @@ import Foundation
 
 protocol TrackingServiceProtocol {
     func fetchTrackings(_ isArchived: Bool) async throws -> [TrackingData]?
-    func createTracking(_ model: Package) async throws -> TrackingResponse
-    func deleteTracking(_ id: String) async throws -> [TrackingData]
+    func createTracking(_ model: Package) async throws -> TrackingResponseDTO
+    func deleteTracking(_ id: String) async throws -> TrackingData
 }
 
 extension TrackingServiceProtocol {
@@ -77,11 +77,16 @@ struct TrackingService: TrackingServiceProtocol {
         }
         
         debugLog(endpointRequest,response: response, responseData: data)
-        return try JSONDecoder().decode(TrackingResponse.self, from: data).data
+        let dto = try JSONDecoder().decode(TrackingResponseDTO.self, from: data)
+        
+        var trackingData: [TrackingData] = []
+        for data in dto.data { trackingData.append(.init(data: data)) }
+        
+        return trackingData
     }
     
     /// Persists new tracking
-    func createTracking(_ model: Package) async throws -> TrackingResponse {
+    func createTracking(_ model: Package) async throws -> TrackingResponseDTO {
         guard let endpointRequest = TrackingApi.createTracking(model).request else {
             throw NetworkingError.invalidURL
         }
@@ -96,12 +101,12 @@ struct TrackingService: TrackingServiceProtocol {
         }
         
         debugLog(endpointRequest,response: response, responseData: data)
-        return try JSONDecoder().decode(TrackingResponse.self, from: data)
+        return try JSONDecoder().decode(TrackingResponseDTO.self, from: data)
     }
     
     /// Deletes a tracking by its number
 	///
-	func deleteTracking(_ id: String) async throws -> [TrackingData] {
+	func deleteTracking(_ id: String) async throws -> TrackingData {
 		guard let endpointRequest = TrackingApi.deleteTracking(id).request else {
 			throw NetworkingError.invalidURL
 		}
@@ -116,6 +121,43 @@ struct TrackingService: TrackingServiceProtocol {
 		}
 		
 		debugLog(endpointRequest,response: response, responseData: data)
-		return try JSONDecoder().decode(TrackingResponse.self, from: data).data
+        let dto = try JSONDecoder().decode(DeleTrackingResponseDTO.self, from: data)
+        
+        return .init(data: dto.data)
 	}
 }
+
+
+/*
+ ====== REQUEST ======
+
+URL: https://api.trackingmore.com/v4/trackings/delete/9c2cdcc6651a09e36a7f32cd7828fe78
+HTTP METHOD: DELETE
+HEADERS:
+{
+  "Content-Type" : "application\/json",
+  "Accept" : "application\/json",
+  "Tracking-Api-Key" : "mqoj8fr9-7efz-gywk-kd59-7n84j8o0xqb1"
+}
+
+ ====== RESPONSE ======
+
+CODE: 200
+HEADERS:
+{
+  "Date" : "Mon, 03 Jun 2024 16:41:27 GMT",
+  "access-control-allow-methods" : "GET, POST, PUT, GET, OPTIONS, DELETE",
+  "Content-Type" : "application\/json",
+  "Access-Control-Allow-Origin" : "*",
+  "Server" : "cloudflare",
+  "Content-Encoding" : "gzip",
+  "access-control-allow-headers" : "x-requested-with,content-type,tracking-api-key",
+  "cf-ray" : "88e1217b8b6c628a-GRU",
+  "cf-cache-status" : "DYNAMIC"
+}
+BODY:
+{"meta":{"code":200,"message":"Request response is successful"},"data":{"id":"9c2cdcc6651a09e36a7f32cd7828fe78","tracking_number":"NM391959583BR","courier_code":"brazil-correios"}}
+
+ ====== END ======
+ 
+ */

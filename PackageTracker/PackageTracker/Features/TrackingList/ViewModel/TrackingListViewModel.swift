@@ -7,9 +7,14 @@
 
 import Foundation
 import Combine
+import SwiftData
+import SwiftUI
 
 protocol TrackingListViewModelProtocol: ObservableObject {
-    func fetchTrackings() async
+    func fetchFromRemote(_ isConnected: Bool) async
+    func fetchFromLocal() async
+    func createTracking() async
+    func deleteTracking(by id: String) async
 }
 
 final class TrackingListViewModel: TrackingListViewModelProtocol {
@@ -20,24 +25,24 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
     @Published var hasError: Bool = false
     @Published var trackings: [TrackingData] = []
     @Published var selectedTracking: TrackingData?
-	@Published var searchedText: String = ""
+    @Published var searchedText: String = ""
     @Published var searchedTrackings: [TrackingData]?
-	@Published var selectedStatus: DeliveryStatus = .transit
-	
-	@Published var trackingNumber: String = ""
-	@Published var packageName: String = ""
-	var isAbleToContinue: Bool {
-		!trackingNumber.isEmpty && !packageName.isEmpty
-	}
-	
-	var isLoading: Bool = false
-	var needsRefresh: Bool = true
+    @Published var selectedStatus: DeliveryStatus = .transit
     
+    @Published var trackingNumber: String = ""
+    @Published var packageName: String = ""
+    var isAbleToContinue: Bool { !trackingNumber.isEmpty && !packageName.isEmpty }
+    
+    var isLoading: Bool = false
+    @AppStorage("needsRefresh") var needsRefresh: Bool = true
+    
+    var modelContext: ModelContext
     var subscriptions = Set<AnyCancellable>()
     
     // MARK: - Init
-    init(_ service: TrackingServiceProtocol) {
+    init(_ service: TrackingServiceProtocol, modelContext: ModelContext) {
         self.service = service
+        self.modelContext = modelContext
         
         $searchedText
             .removeDuplicates()
@@ -71,10 +76,69 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
         }
     }
     
-    // MARK: - Network
-	@MainActor
-    func fetchTrackings() async {
-        guard !isLoading else { return }
+    // MARK: - Networking
+    @MainActor
+    func fetchFromRemote(_ isConnected: Bool) async {
+        if isConnected {
+            guard !isLoading else { return }
+            state = .loading
+            isLoading = true
+            hasError = false
+            
+            defer {
+                state = .idle
+                isLoading = false
+                needsRefresh = false
+            }
+            
+            do {
+                let data = try await service.fetchTrackings(false)
+                guard let trackings = data else {
+                    self.state = .failed(error: TrackingService.NetworkingError.invalidData)
+                    self.hasError = true
+                    return
+                }
+                
+                for tracking in trackings {
+                    modelContext.insert(tracking)
+                }
+                
+                try modelContext.save()
+                await fetchFromLocal()
+                
+                self.state = .success
+            } catch {
+                await fetchFromLocal()
+            }
+        } else {
+            await fetchFromLocal()
+        }
+    }
+    
+    @MainActor
+    func fetchFromLocal() async {
+        isLoading = true
+        hasError = false
+        state = .loading
+        
+        defer {
+            state = .idle
+            isLoading = false
+            needsRefresh = false
+        }
+        
+        do {
+            let descriptor = FetchDescriptor<TrackingData>(sortBy: [SortDescriptor(\.title)])
+            trackings = try modelContext.fetch(descriptor)
+            self.state = .success
+        } catch {
+            self.hasError = true
+            self.state = .failed(error: CustomError.unexpected)
+        }
+    }
+    
+    @MainActor
+    func createTracking() async {
         state = .loading
         isLoading = true
         hasError = false
@@ -82,68 +146,48 @@ final class TrackingListViewModel: TrackingListViewModelProtocol {
         defer {
             state = .idle
             isLoading = false
-			needsRefresh = false
+            needsRefresh = true
         }
         
         do {
-            try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
-            let data = try await service.fetchTrackings(false)
-            guard let trackings = data else {
-                self.state = .failed(error: TrackingService.NetworkingError.invalidData)
-                self.hasError = true
-                return
+            let model = Package(title: packageName, trackingNumber: trackingNumber)
+            let response = try await service.createTracking(model)
+            
+            for data in response.data {
+                modelContext.insert(TrackingData(data: data))
             }
-            self.trackings = trackings
+            
+            try modelContext.save()
+            await fetchFromLocal()
+
             self.state = .success
         } catch {
-            self.hasError = true
             self.state = .failed(error: error)
+            self.hasError = true
         }
     }
-	
-	@MainActor
-	func createTracking() async {
-		state = .loading
-		isLoading = true
-		hasError = false
-		
-		defer {
-			state = .idle
-			isLoading = false
-			needsRefresh = true
-		}
-		
-		do {
-//			try? await Task.sleep(nanoseconds: 2 * 1_000_000_000) // for testing purposes ;)
-			let model = Package(title: packageName, trackingNumber: trackingNumber)
-			_ = try await service.createTracking(model)
-			
-			self.state = .success
-		} catch {
-			self.state = .failed(error: error)
-			self.hasError = true
-		}
-	}
-	
-	@MainActor
-	func deleteTracking(by id: String) async {
-		state = .loading
-		isLoading = true
-		hasError = false
-		
-		defer {
-			state = .idle
-			isLoading = false
-			needsRefresh = true
-		}
-		
-		do {
-			_ = try await service.deleteTracking(id)
-			self.state = .success
-		} catch {
-			self.state = .failed(error: error)
-			self.hasError = true
-		}
-	}
-	
+    
+    @MainActor
+    func deleteTracking(by id: String) async {
+        state = .loading
+        isLoading = true
+        hasError = false
+        
+        defer {
+            state = .idle
+            isLoading = false
+            needsRefresh = true
+        }
+        
+        do {
+            _ = try await service.deleteTracking(id)
+            // TODO: Fix predicate
+//            try modelContext.delete(model: TrackingData.self, where: #Predicate { $0.id == response.id })
+
+            self.state = .success
+        } catch {
+            self.state = .failed(error: error)
+            self.hasError = true
+        }
+    }
 }
